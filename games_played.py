@@ -8,6 +8,8 @@ connstring = Secret.load("sprocket-main-ds-pg")
 def games_played():
     conn = psycopg2.connect(connstring.get())
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM series")
+    cursor.execute("""
+SELECT COUNT(*), DATE_TRUNC('week', "createdAt") FROM sprocket.match GROUP BY 2 ORDER BY 2 desc LIMIT 1;
+""")
     r = cursor.fetchall()
     print(r)
