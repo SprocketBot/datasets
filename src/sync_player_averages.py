@@ -1,7 +1,7 @@
 from prefect import flow, task
 
 from prefect.blocks.system import Secret
-
+from tasks.flush_as_parquet import flush_parquet
 from tasks.write_to_google_sheet import write_to_google_sheet
 from tasks.exec_postgres import exec_pg
 from prefect.blocks.notifications import DiscordWebhook
@@ -14,7 +14,7 @@ discord_webhook_block = DiscordWebhook.load("frog-of-knowledge-alerts")
 # Prep Blocks
 @flow(name="Average Player Stats", log_prints=True)
 def avg_player_stats():
-    (query_result, query_columns) = exec_pg("""
+    query_result = exec_pg("""
 WITH RAW_STATS AS (
     SELECT stats,
         (psl.stats->'gpi')::numeric as SprocketRating,
@@ -48,12 +48,14 @@ SELECT
     ROUND(SUM(assists), 2) as "Total assists",
     CONCAT(ROUND(AVG(shooting_percentage), 2), '%') as "Shooting %"
  FROM RAW_STATS
- GROUP BY name
+ GROUP BY name;
 """)
 
-    (sheet_url, sheet_title, inserted_rows) = write_to_google_sheet('Basic Data Export', query_result, query_columns, gcs_service_acct_creds.get())
+    (sheet_url, sheet_title, inserted_rows) = write_to_google_sheet('Basic Data Export', query_result, gcs_service_acct_creds.get())
 
     discord_webhook_block.notify(f"Wrote {inserted_rows} rows to [{sheet_title}]({sheet_url})")
+
+    flush_parquet("test.parquet", query_result)
 
 if __name__ == "__main__":
     avg_player_stats()

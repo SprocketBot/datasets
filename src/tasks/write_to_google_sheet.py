@@ -6,7 +6,7 @@ from prefect.blocks.system import Secret
 
 
 @task(name="Write to Google Sheet")
-def write_to_google_sheet(sheet_title: str, data: list[tuple] | tuple[tuple], cols: list[str], service_acct: str):
+def write_to_google_sheet(sheet_title: str, data: list[dict] | tuple[dict], service_acct: str):
     #Authorize the API
     client = gspread.auth.service_account_from_dict(json.loads(service_acct))
     sheet = client.open(sheet_title)
@@ -24,8 +24,9 @@ def write_to_google_sheet(sheet_title: str, data: list[tuple] | tuple[tuple], co
         page.delete_rows(2, page.row_count)
 
 
-    clean_data = [ [str(v) for v in row ] for row in data]
-    
+    clean_data = [ [str(row[v]) for v in row ] for row in data]
+    cols = [str(v) for v in data[0]]
+
     all_rows = [cols]
     
     all_rows.extend(clean_data)

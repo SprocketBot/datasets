@@ -1,5 +1,7 @@
 from prefect import flow, task
-import psycopg2
+import psycopg
+from psycopg.rows import dict_row
+
 
 from prefect.blocks.system import Secret
 from prefect.blocks.notifications import DiscordWebhook
@@ -10,7 +12,7 @@ discord_webhook_block = DiscordWebhook.load("frog-of-knowledge-alerts")
 
 @flow(name="Games Played", log_prints=True)
 def games_played():
-    conn = psycopg2.connect(connstring.get())
+    conn = psycopg.connect(connstring.get(), row_factory=dict_row)
     cursor = conn.cursor()
     cursor.execute("""
 SELECT  COUNT(*) as games, 
@@ -22,7 +24,7 @@ LIMIT 1;
 """)
     r = cursor.fetchall()
     notify_str = f"""
-There have been {r[0][0]} matches played in the last hour!
+There have been {r[0]["games"]} matches played in the last hour!
 """
     print(notify_str)
     discord_webhook_block.notify(notify_str)
