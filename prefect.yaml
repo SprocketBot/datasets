@@ -1,0 +1,38 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: data
+prefect-version: 2.13.2
+
+# build section allows you to manage and build docker images
+build:
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push:
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/sprocketbot/data
+    branch: main
+    access_token: '{{ $GITHUB_PAT }}'
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: Games Played Notifier
+  version:
+  tags: []
+  description: A simple flow that posts the number of games played over the last hour
+    into discord.
+  schedule:
+    cron: '0 * * * * '
+    timezone:
+    day_or: true
+  entrypoint: ./games_played.py:games_played
+  parameters: {}
+  work_pool:
+    name: worker-pool
+    work_queue_name: default
+    job_variables: {}
