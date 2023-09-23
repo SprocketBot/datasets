@@ -34,7 +34,7 @@ SELECT
     name as "Player Name",
     COUNT(*) AS "Games Included",
     ROUND(AVG(SprocketRating),2) as "Average Sprocket Rating",
-    CONCAT(ROUND(100 * AVG(CASE WHEN MVP THEN 1 ELSE 0 END), 2), '%') as "MVP %",
+    ROUND(100 * AVG(CASE WHEN MVP THEN 1 ELSE 0 END), 2) as "MVP %",
     COUNT(*) FILTER (WHERE MVP) as "Games MVP'd",
     ROUND(AVG(goals), 2) as "Average goals",
     ROUND(SUM(goals), 2) as "Total goals",
@@ -46,16 +46,17 @@ SELECT
     ROUND(SUM(shots), 2) as "Total shots",
     ROUND(AVG(assists), 2) as "Average assists",
     ROUND(SUM(assists), 2) as "Total assists",
-    CONCAT(ROUND(AVG(shooting_percentage), 2), '%') as "Shooting %"
+    ROUND(AVG(shooting_percentage), 2) as "Shooting %"
  FROM RAW_STATS
  GROUP BY name;
 """)
 
+    # TODO: Run these in parallel
     (sheet_url, sheet_title, inserted_rows) = write_to_google_sheet('Basic Data Export', query_result, gcs_service_acct_creds.get())
-
+    flush_parquet("test.parquet", query_result)
     discord_webhook_block.notify(f"Wrote {inserted_rows} rows to [{sheet_title}]({sheet_url})")
 
-    flush_parquet("test.parquet", query_result)
+    
 
 if __name__ == "__main__":
     avg_player_stats()
