@@ -8,6 +8,6 @@ connstring = Secret.load("sprocket-main-ds-pg")
 def games_played():
     conn = psycopg2.connect(connstring.get())
     cursor = conn.cursor()
-    cursor.query("SELECT COUNT(*) FROM series")
+    cursor.execute("SELECT COUNT(*) FROM series")
     r = cursor.fetchall()
     print(r)
