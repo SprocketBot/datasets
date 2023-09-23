@@ -8,8 +8,6 @@ from prefect.blocks.notifications import DiscordWebhook
 connstring = Secret.load("sprocket-main-ds-pg")
 discord_webhook_block = DiscordWebhook.load("frog-of-knowledge-alerts")
 
-
-
 @flow(name="Games Played", log_prints=True)
 def games_played():
     conn = psycopg2.connect(connstring.get())

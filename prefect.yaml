@@ -14,30 +14,44 @@ push:
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
-  - prefect.deployments.steps.git_clone:
-      id: clone-step
-      repository: https://github.com/sprocketbot/data
-      branch: main
-      access_token: '{{ $GITHUB_PAT }}'
-  - prefect.deployments.steps.pip_install_requirements:
-      directory: "{{ clone-step.directory }}"
-      requirements_file: requirements.txt
-      stream_output: False
+- prefect.deployments.steps.git_clone:
+    id: clone-step
+    repository: https://github.com/sprocketbot/data
+    branch: main
+    access_token: '{{ $GITHUB_PAT }}'
+- prefect.deployments.steps.pip_install_requirements:
+    directory: '{{ clone-step.directory }}'
+    requirements_file: requirements.txt
+    stream_output: false
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
-  - name: Games Played Notifier
-    version:
-    tags: []
-    description: A simple flow that posts the number of games played over the last hour
-      into discord.
-    schedule:
-      cron: '0 * * * * '
-      timezone:
-      day_or: true
-    entrypoint: ./games_played.py:games_played
-    parameters: {}
-    work_pool:
-      name: worker-pool
-      work_queue_name: default
-      job_variables: {}
+- name: Games Played Notifier
+  version:
+  tags: []
+  description: A simple flow that posts the number of games played over the last hour
+    into discord.
+  schedule:
+    cron: '0 * * * * '
+    timezone:
+    day_or: true
+  entrypoint: ./src/games_played.py:games_played
+  parameters: {}
+  work_pool:
+    name: worker-pool
+    work_queue_name: default
+    job_variables: {}
+- name: Avg. Player Stats
+  version:
+  tags: ["out:sheets"]
+  description:
+  entrypoint: ./src/sync_player_averages.py:avg_player_stats
+  parameters: {}
+  work_pool:
+    name: worker-pool
+    work_queue_name:
+    job_variables: {}
+  schedule:
+    cron: 0 0 * * *
+    timezone: UTC
+    day_or: true
