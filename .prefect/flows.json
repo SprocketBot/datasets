@@ -1,4 +1,4 @@
 {
-  "Games Played": "games_played.py:games_played",
-  "Games Played to Sheets": "src/sync_player_averages.py:games_played_sheets"
+  "Average Player Stats": "src/sync_player_averages.py:avg_player_stats",
+  "Games Played": "src/games_played.py:games_played"
 }

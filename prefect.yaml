@@ -53,5 +53,5 @@ deployments:
     job_variables: {}
   schedule:
     cron: 0 0 * * *
-    timezone: UTC
+    timezone: EST
     day_or: true
