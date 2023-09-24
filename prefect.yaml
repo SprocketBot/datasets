@@ -66,6 +66,6 @@ deployments:
     work_queue_name:
     job_variables: {}
   schedule:
-    cron: 0 */3 * * *
+    cron: 0 */6 * * *
     timezone: EST
     day_or: true
