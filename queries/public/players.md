@@ -1,0 +1,1 @@
+This table contains a basic informational table about the current players in Minor League Esports
