@@ -2,6 +2,7 @@ import os
 import shutil
 
 import markdown2
+import requests
 from prefect import flow
 from execute_query_file import execute_query_file
 from prefect.artifacts import create_markdown_artifact
@@ -10,6 +11,7 @@ from prefect.blocks.notifications import DiscordWebhook
 
 remote_file_system_block = RemoteFileSystem.load("s3")
 discord_webhook_block = DiscordWebhook.load("frog-of-knowledge-alerts")
+
 
 @flow(name="Execute Public Queries", log_prints=True)
 def execute_public_queries(root_dir="", traces: list[dict] = None):
@@ -51,14 +53,23 @@ def execute_public_queries(root_dir="", traces: list[dict] = None):
         # We only want to proceed if this was the original function
         if not top_exec: return
 
-        print(traces)
-
+        # TOOD: This should be a task
+        bucket_url = "https://f004.backblazeb2.com/file/sprocket-artifacts/"
         new_line = "\n"
         query_docs = new_line.join([f"""
-## [{q['query_path']}](https://f004.backblazeb2.com/file/sprocket-artifacts/{q['query_path']})
+## [{q['query_path']}]({bucket_url}{q['query_path']})
+
 {q['query_docs']}
 
-"""  for q in traces])
+Try Me:
+
+```sql
+SELECT * 
+FROM 
+    read_parquet('{bucket_url}{q['query_path']}');
+```
+
+""" for q in traces])
 
         doc_content = f"""
 # Sprocket Datasets
@@ -66,19 +77,42 @@ def execute_public_queries(root_dir="", traces: list[dict] = None):
 This document outlines a list of available datasets produced from Sprocket's database.
 There is information about players, teams, and games included here.
 
+You can being exploring this data with the [DuckDB Web Console](https://shell.duckdb.org/)
+
 ---
 
 {query_docs}
 """
         create_markdown_artifact(doc_content, "written-files")
-        doc_as_html = markdown2.markdown(doc_content)
+        doc_as_html = markdown2.markdown(doc_content, extras=["fenced-code-blocks"])
+        doc_as_html = f"""
+{doc_as_html}
+<link rel="stylesheet" type="text/css" href="{bucket_url}public/styles/highlight.css"/>
+<link rel="stylesheet" type="text/css" href="{bucket_url}public/styles/styles.css"/>
+        """
+
+        os.makedirs("public/styles", exist_ok=True)
+
+        with open("public/styles/highlight.css", "w") as f:
+            highlightCss = requests.get("https://raw.githubusercontent.com/richleland/pygments-css/master/manni.css")
+            highlightCss.raise_for_status()
+            f.write(highlightCss.text.replace("highlight", "codehilite"))
+
+        with open("public/styles/styles.css", "w") as f:
+            style_url = "https://raw.githubusercontent.com/markdowncss/retro/master/css/retro.css"
+            css = requests.get(style_url)
+            css.raise_for_status()
+            f.write(css.text)
+
+
         with open("public/summary.html", "w") as f:
             f.write(doc_as_html)
 
         remote_file_system_block.put_directory("public", "public", overwrite=True)
         shutil.rmtree("public")
 
-        discord_webhook_block.notify("Refreshed public datasets! ([Summary](https://f004.backblazeb2.com/file/sprocket-artifacts/public/summary.html)) ")
+        discord_webhook_block.notify(
+            "Refreshed public datasets! ([Summary](https://f004.backblazeb2.com/file/sprocket-artifacts/public/summary.html)) ")
 
 
 if __name__ == "__main__":
