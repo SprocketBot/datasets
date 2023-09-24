@@ -1,4 +1,5 @@
 {
   "Average Player Stats": "src/sync_player_averages.py:avg_player_stats",
+  "Execute Public Queries": "src/execute_public_queries.py:execute_public_queries",
   "Games Played": "src/games_played.py:games_played"
 }

@@ -43,7 +43,7 @@ deployments:
     job_variables: {}
 - name: Avg. Player Stats
   version:
-  tags: ["out:sheets"]
+  tags: [out:sheets]
   description:
   entrypoint: ./src/sync_player_averages.py:avg_player_stats
   parameters: {}
@@ -53,5 +53,19 @@ deployments:
     job_variables: {}
   schedule:
     cron: 0 0 * * *
+    timezone: EST
+    day_or: true
+- name: execute_public_queries
+  version:
+  tags: []
+  description:
+  entrypoint: src/execute_public_queries.py:execute_public_queries
+  parameters: {}
+  work_pool:
+    name: worker-pool
+    work_queue_name:
+    job_variables: {}
+  schedule:
+    cron: 0 */3 * * *
     timezone: EST
     day_or: true
