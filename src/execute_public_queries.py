@@ -109,6 +109,8 @@ def build_and_upload(traces: list[dict]):
 
     template = env.get_template("query_report.jinja.html")
 
+    os.makedirs(f"./{s3_root_path}", exist_ok=True)
+
     with open(f"{s3_root_path}/summary.html", "w") as f:
         f.write(template.render(traces=traces, bucket_url=bucket_url))
 
