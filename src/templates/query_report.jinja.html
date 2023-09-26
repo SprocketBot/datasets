@@ -191,7 +191,7 @@
         <h4 class="mb-2 text-lg text-primary">Try Me:</h4>
         <pre class="text-xs"><code lang="sql">SELECT *
 FROM read_parquet(
-    '{{ bucket_url }}{{ trace['query_path'] }}'
+    '{{ public_url }}{{ trace['query_path'] }}'
 );</code></pre>
         </div>
 
@@ -209,7 +209,7 @@ FROM read_parquet(
                 class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4
                     bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800
                 "
-                href="{{ bucket_url }}{{ trace['query_path'] }}">
+                href="{{ public_url }}{{ trace['query_path'] }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
@@ -220,6 +220,18 @@ FROM read_parquet(
     </article>
 
  {% endfor %}
+
+
+    <hr class="border-primary my-4"/>
+
+    <h2 class="text-2xl font-bold text-primary">Archived Datasets</h2>
+    <ul class="list-disc">
+    {% for dataset in archive_files %}
+        <li><a class="font-medium underline hover:no-underline" href="{{ public_url }}/{{ dataset }}">{{ dataset }}</a></li>
+    {% endfor %}
+    </ul>
+
+
 
 </main>
 </body>

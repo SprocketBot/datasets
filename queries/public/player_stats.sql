@@ -11,3 +11,5 @@ SELECT ROUND((stats -> 'dpi'                                               )::nu
        p."memberId"                                                  as player_id
 FROM sprocket.player_stat_line
          INNER JOIN player p on player_stat_line."playerId" = p.id
+
+LIMIT 5
