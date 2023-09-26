@@ -103,13 +103,13 @@ def build_trace(result: str, doc: str):
     return output
 
 
-@task
 def build_and_upload(traces: list[dict]):
     bucket_url = "https://f004.backblazeb2.com/file/sprocket-artifacts/"
 
     template = env.get_template("query_report.jinja.html")
 
     os.makedirs(f"./{s3_root_path}", exist_ok=True)
+    os.makedirs(f"./{s3_root_path}/archive", exist_ok=True)
 
     with open(f"{s3_root_path}/summary.html", "w") as f:
         f.write(template.render(traces=traces, bucket_url=bucket_url))
@@ -143,7 +143,7 @@ def execute_public_queries(root_dir=""):
     traces = execute_query_dir(root_dir)
     end_queries = time.time()
 
-    build_and_upload.submit(traces)
+    build_and_upload([t.result() for t in traces])
 
     end_uploads = time.time()
 
