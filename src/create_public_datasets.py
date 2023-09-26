@@ -7,6 +7,7 @@ from datetime import datetime
 
 import duckdb
 import markdown2
+import pytz
 import requests
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from prefect import flow, task
@@ -120,7 +121,8 @@ def build_archive(query_paths: list[str], url_prefix: str):
                     mem_file.seek(0)
                     tar.addfile(info, mem_file)
 
-        now = datetime.now()
+        now = datetime.now(pytz.timezone('US/Eastern'))
+
         date_string = now.strftime("%Y-%m-%d_%H-00")
 
         s3_fs.write_path("all-datasets.tar.gz", tmp_file.read())
