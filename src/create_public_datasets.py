@@ -36,9 +36,6 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
-ddb = duckdb.connect(":memory:")
-
-
 ###
 # Define Non-Task Helper Funcs
 ###
@@ -57,6 +54,7 @@ def handle_query(root: str, filename: str):
 # Define flow-specific tasks
 ###
 
+
 @task
 def sync_static_assets():
     # TODO: Delete assets that no longer exist locally
@@ -65,6 +63,8 @@ def sync_static_assets():
 
 @task
 def build_summary_page(query_bucket_paths: list[str], url_prefix: str, archive_files: list[str]):
+    ddb = duckdb.connect(":memory:")
+
     query_metas = []
 
     for query_s3_path in query_bucket_paths:
@@ -142,7 +142,6 @@ async def create_public_datasets(public_url_prefix: str = "https://f004.backblaz
     query_results = [r for r in await resolve_futures_to_data(query_futures) if r is not None]
     # Queries have all run
     # Now we need to build the summary page
-    print(query_results)
 
     step_2_result = await resolve_futures_to_data([
         build_archive.submit(query_results, public_url_prefix),
@@ -151,9 +150,9 @@ async def create_public_datasets(public_url_prefix: str = "https://f004.backblaz
 
     archive_files: list[str] = step_2_result[0]
 
-    build_summary_page.submit(
-        query_results, public_url_prefix, archive_files
-    )
+    await resolve_futures_to_data([
+        build_summary_page.submit(query_results, public_url_prefix, archive_files)
+    ])
 
     notify_string = f"""
     Public Datasets Updated 🔄🔄.
