@@ -182,7 +182,7 @@
     <article title="{{ trace['query_path'] }}" class="my-4">
         <h3 class="text-xl font-mono text-primary" id="{{ trace['query_path'] }}">{{ trace['query_path'] }}</h3>
         <section class="p-4">
-            {{ trace['query_docs'] }}
+            {{ trace['query_docs']|safe }}
         </section>
 
         <section class="flex flex-col gap-4">
@@ -209,7 +209,7 @@ FROM read_parquet(
                 class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4
                     bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800
                 "
-                href="{{ bucket_url }}/{{ trace['query_path'] }}">
+                href="{{ bucket_url }}{{ trace['query_path'] }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
