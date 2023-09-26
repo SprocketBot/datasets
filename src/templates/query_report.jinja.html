@@ -1,0 +1,227 @@
+{% from "table_macro.jinja.html" import list_table %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sprocket Public Datasets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/sql.min.js"></script>
+
+    <script>hljs.highlightAll();</script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="icon" href="./assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="./assets/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="./assets/favicon/safari-pinned-tab.svg" color="#febf2b" />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sprocket Public Datasets">
+    <meta property="og:url" content="https://f004.backblazeb2.com/file/sprocket-artifacts/public/summary.html">
+    <!-- TODO: Get source asset to modify
+        <meta property="og:image" content="">
+    -->
+    <meta property="og:description" content="List of datasets that are exported from the Sprocket Database to enable community members to perform their own analyses">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    'sans': ['Montserrat', 'sans-serif'],
+                    'mono': ['Source Code Pro', 'monospace']
+                },
+                colors: {
+                    primary: {
+                        DEFAULT: "#FEBF2B",
+                        50: "#FFEFCB",
+                        100: "#FFEAB9",
+                        200: "#FFDF96",
+                        300: "#FED472",
+                        400: "#FECA4F",
+                        500: "#FEBF2B",
+                        600: "#FAB001",
+                        700: "#CC9001",
+                        800: "#9F6F01",
+                        900: "#714F01",
+                    },
+                    secondary: {
+                        DEFAULT: "#FF5A1F",
+                        50: "#FFE1D7",
+                        100: "#FFD2C2",
+                        200: "#FFB499",
+                        300: "#FF9671",
+                        400: "#FF7848",
+                        500: "#FF5A1F",
+                        600: "#E63D00",
+                        700: "#AE2E00",
+                        800: "#761F00",
+                        900: "#3E1000",
+                    },
+                    accent: {
+                        DEFAULT: "#ED3E93",
+                        50: "#FBD1E5",
+                        100: "#F9C1DC",
+                        200: "#F6A0CA",
+                        300: "#F37FB8",
+                        400: "#F05FA5",
+                        500: "#ED3E93",
+                        600: "#E8167C",
+                        700: "#BE1265",
+                        800: "#940E4F",
+                        900: "#6A0A38",
+                    },
+                    gray: {
+                        DEFAULT: "#4B4A49",
+                        50: "#F6F6F6",
+                        100: "#E3E3E3",
+                        200: "#BDBDBC",
+                        300: "#979795",
+                        400: "#71716F",
+                        500: "#4B4A49",
+                        600: "#3B3B3A",
+                        700: "#2C2C2B",
+                        800: "#1C1C1C",
+                        900: "#0D0D0D",
+                    },
+                    info: {
+                        DEFAULT: "#3F83F8",
+                        50: "#F0F5FE",
+                        100: "#DCE9FE",
+                        200: "#B5CFFC",
+                        300: "#8EB6FB",
+                        400: "#669CF9",
+                        500: "#3F83F8",
+                        600: "#1366F6",
+                        700: "#0853D3",
+                        800: "#0641A7",
+                        900: "#04307B",
+                    },
+                    success: {
+                        DEFAULT: "#1BC058",
+                        50: "#DEFAE8",
+                        100: "#C5F7D7",
+                        200: "#94F0B6",
+                        300: "#63E994",
+                        400: "#32E272",
+                        500: "#1BC058",
+                        600: "#159343",
+                        700: "#0F672F",
+                        800: "#083A1B",
+                        900: "#020D06",
+                    },
+                    warning: {
+                        DEFAULT: "#E5BE34",
+                        50: "#FCFAF2",
+                        100: "#FAF4DB",
+                        200: "#F6E9BB",
+                        300: "#F0DB8E",
+                        400: "#EACD61",
+                        500: "#E5BE34",
+                        600: "#C29D19",
+                        700: "#8C7212",
+                        800: "#56460B",
+                        900: "#201A04",
+                    },
+                    danger: {
+                        DEFAULT: "#F62C2C",
+                        50: "#FEF2F2",
+                        100: "#FEDCDC",
+                        200: "#FCB0B0",
+                        300: "#FA8484",
+                        400: "#F85858",
+                        500: "#F62C2C",
+                        600: "#E50A0A",
+                        700: "#B40808",
+                        800: "#830606",
+                        900: "#4E0303",
+                    },
+                }
+
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-800 text-gray-200">
+<main class="container mx-auto py-8">
+<h1 class="text-3xl font-bold text-primary mb-2">Sprocket Datasets</h1>
+
+<p class="my-2">This document outlines a list of available datasets produced from Sprocket's database.
+    There is information about players, teams, and games included here.</p>
+
+<p>
+    You can begin exploring this data with the <a class="font-medium underline text-primary hover:no-underline" href="https://shell.duckdb.org" target="_blank">DuckDB Web Console</a>.
+    </p><p>For more thorough tools, consider using the <a class="font-medium underline text-primary hover:no-underline" href="https://duckdb.org/docs/installation/index">DuckDB CLI</a>, <a class="font-medium underline text-primary hover:no-underline"
+        href="https://www.tablab.app/">Tab Lab</a> or <a class="font-medium underline text-primary hover:no-underline" href="https://www.timestored.com/qstudio/"
+                                                      target="_blank">qStudio</a>
+</p>
+
+<hr class="border-primary my-4"/>
+
+<h2 class="text-2xl font-bold text-primary">Available Views</h2>
+<p>Each view is available as a <a class="font-medium underline text-primary hover:no-underline" href="https://parquet.apache.org/" target="_blank"><span
+        class="font-mono">.parquet</span></a> file. You can think of <span class="font-mono">parquet</span> as a more
+    advanced CSV file.</p>
+
+
+ {% for trace in traces %}
+    <article title="{{ trace['query_path'] }}" class="my-4">
+        <h3 class="text-xl font-mono text-primary" id="{{ trace['query_path'] }}">{{ trace['query_path'] }}</h3>
+        <section class="p-4">
+            {{ trace['query_docs'] }}
+        </section>
+
+        <section class="flex flex-col gap-4">
+
+        <div>
+        <h4 class="mb-2 text-lg text-primary">Try Me:</h4>
+        <pre class="text-xs"><code lang="sql">SELECT *
+FROM read_parquet(
+    '{{ bucket_url }}{{ trace['query_path'] }}'
+);</code></pre>
+        </div>
+
+            <div>
+        <h4 class="mb-2 text-lg text-primary">Table Schema:</h4>
+        {{ list_table(trace["schema"]) }}
+            </div><div>
+        <h4 class="mb-2 text-lg text-primary">Sample Data:</h4>
+        {{ list_table(trace["sample"]) }}
+        </div><div>
+        <h4 class="mb-2 text-lg text-primary">At a Glance:</h4>
+        {{ list_table(trace["glance"]) }}
+        </div>
+        <a
+                class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4
+                    bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800
+                "
+                href="{{ bucket_url }}/{{ trace['query_path'] }}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+
+            Download {{ trace['query_path'] }}
+        </a>
+        </section>
+    </article>
+
+ {% endfor %}
+
+</main>
+</body>
+
+</html>

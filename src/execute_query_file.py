@@ -17,8 +17,9 @@ def execute_query_file(query_file: str, bucket_prefix: str, to_s3=True):
     bucket_path = f"{bucket_prefix}/{query_file.split('/')[-1].replace('sql', 'parquet')}"
     if to_s3:
         flush_parquet(bucket_path, result)
+        return None
     else:
-        to_parquet_file(bucket_path, result)
+        return to_parquet_file(bucket_path, result)
 
 if __name__ == "__main__":
     # Gets the public queries

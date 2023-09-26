@@ -17,5 +17,6 @@ def flush_parquet(path: str, data: list[dict]):
     print("Uploaded; removing local file")
     os.remove('tmp.parquet')
 
+
 if __name__ == '__main__':
     flush_parquet.fn("./test", [{"x": 1, "y": 2}, { "x": 2, "y": 3 }])
