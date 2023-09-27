@@ -177,10 +177,21 @@
         class="font-mono">.parquet</span></a> file. You can think of <span class="font-mono">parquet</span> as a more
     advanced CSV file.</p>
 
+<h3 class="text-xl font-mono text-primary">Available Views</h3>
+    <ul class="list-disc pl-4">
+    {% for trace in traces %}
+        {% set stripped_path = trace['query_path'].lstrip("/") %}
+        <li> <a class="font-medium underline hover:no-underline" href="#{{stripped_path}}"> {{stripped_path}} </a></li>
+    {% endfor %}
+    </ul>
+
+
 
  {% for trace in traces %}
-    <article title="{{ trace['query_path'] }}" class="my-4">
-        <h3 class="text-xl font-mono text-primary" id="{{ trace['query_path'] }}">{{ trace['query_path'] }}</h3>
+    {% set stripped_path = trace['query_path'].lstrip("/") %}
+
+    <article title="{{ stripped_path }}" class="my-4">
+        <h3 class="text-xl font-mono text-primary" id="{{ stripped_path }}">{{ stripped_path }}</h3>
         <section class="p-4">
             {{ trace['query_docs']|safe }}
         </section>
