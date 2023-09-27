@@ -8,8 +8,6 @@ SELECT ROUND((stats -> 'dpi'                                               )::nu
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists'      )::numeric, 2) as assists,
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric, 2) as goals_against,
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against')::numeric, 2) as shots_against,
-       p."memberId"                                                  as player_id
+       p."memberId"                                                  as member_id
 FROM sprocket.player_stat_line
          INNER JOIN player p on player_stat_line."playerId" = p.id
-
-LIMIT 5
