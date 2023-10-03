@@ -1,0 +1,1 @@
+Contains team branding information, conference and division information, along with the MLE name and Sprocket ID

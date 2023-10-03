@@ -145,6 +145,8 @@ async def create_public_datasets(public_url_prefix: str = "https://f004.backblaz
     # Queries have all run
     # Now we need to build the summary page
 
+    print(query_results)
+
     step_2_result = await resolve_futures_to_data([
         build_archive.submit(query_results, public_url_prefix),
         sync_static_assets.submit()

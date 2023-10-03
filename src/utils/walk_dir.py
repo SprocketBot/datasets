@@ -18,8 +18,9 @@ def walk_dir(root: str, file_fn: Callable[[str, str], T] = None, dir_fn: Callabl
     for each file found, passing the root directory and file name as parameters. It also calls the specified dir_fn
     function for each directory found, passing the root directory and directory name as parameters.
     """
+    results = []
     for root, dirs, files in os.walk(root):
-        results = []
+        print(dirs, files)
         if file_fn:
             for file in files:
                 results.append(file_fn(root, file))
@@ -27,4 +28,4 @@ def walk_dir(root: str, file_fn: Callable[[str, str], T] = None, dir_fn: Callabl
             for directory in dirs:
                 results.append(dir_fn(root, directory))
 
-        return results
+    return results
