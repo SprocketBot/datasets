@@ -3,3 +3,4 @@ env
 .vscode/settings.json
 ./public
 .env
+Sprocket DS.session.sql
