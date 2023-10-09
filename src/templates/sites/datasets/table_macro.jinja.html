@@ -1,0 +1,22 @@
+{% macro list_table(query) %}
+<div class="relative overflow-x-auto">
+<table class="w-full text-xs text-left">
+    <thead class="font-mono bg-gray-600">
+    <tr>
+        {% for column in query["cols"] %}
+            <th scope="col" class="p-2">{{ column }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in query["data"] %}
+        <tr class="bg-gray-700 border-gray-600 hover:bg-gray-500 ">
+            {% for datum in row %}
+                <td class="px-4 py-2">{{ datum }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endmacro %}

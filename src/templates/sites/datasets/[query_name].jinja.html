@@ -1,0 +1,103 @@
+{% from "table_macro.jinja.html" import list_table %} 
+
+{% extends "layout.jinja.html" %}
+
+{% block main %}
+
+<h2 class="text-2xl font-bolder text-primary mb-2">
+  {{ dataset_name }}
+</h2>
+
+<section>
+  <h3 class="uppercase text-sm font-bold text-gray-400">About:</h3>
+  <div class="prose">
+    {{ docs|safe }}
+  </div>
+</section>
+
+<section>
+  <h3 class="uppercase text-sm font-bold text-gray-400">
+    Example Queries:
+  </h3>
+  <i class="border-l-4 px-2 py-1 border-warning mb-4 text-xs block"
+    >Examples assume you have run the
+    <a href="#view-alias-example">view alias</a> first.</i
+  >
+
+  <dl>
+    <dt
+      id="view-alias-example"
+      class="font-semibold text-xs font-gray-300 uppercase"
+    >
+      Alias a View
+    </dt>
+    <dd>
+      <pre
+        class="text-xs relative"
+      ><code lang="sql">CREATE VIEW v_{{dataset_name}} AS (
+    SELECT * FROM read_parquet(
+        '{{parquet_url}}'
+    )
+);</code><spr-copy-button></spr-copy-button></pre>
+    </dd>
+    <dt class="font-semibold text-xs font-gray-300 uppercase">
+      Select Everything
+    </dt>
+    <dd>
+      <pre
+        class="text-xs relative"
+      ><code lang="sql">SELECT * FROM v_{{dataset_name}}</code><spr-copy-button></spr-copy-button></pre>
+    </dd>
+
+    {% if frontmatter.examples %} {% for example in frontmatter.examples %}
+    <dt class="font-semibold text-xs font-gray-300 uppercase">
+      {{example.title}}
+    </dt>
+    <dd>
+      <pre
+        class="text-xs relative"
+      ><code lang="sql">{{ example.query | regex_replace("\\%[Ff][Ii][Ll][Ee]", "v_" + dataset_name) }}</code><spr-copy-button></spr-copy-button></pre>
+    </dd>
+
+    {% endfor %} {% endif %}
+  </dl>
+</section>
+
+<section class="flex flex-col gap-2">
+  <h3 class="uppercase text-sm font-bold text-gray-400">At a glance:</h3>
+  <div>
+    <h4 class="font-semibold text-xs font-gray-300 uppercase">Table Schema:</h4>
+    {{ list_table(glance.schema) }}
+  </div>
+  <div>
+    <h4 class="font-semibold text-xs font-gray-300 uppercase">Sample Data:</h4>
+    {{ list_table(glance.sample) }}
+  </div>
+  <div>
+    <h4 class="font-semibold text-xs font-gray-300 uppercase">Table Summary:</h4>
+    {{ list_table(glance.summary) }}
+  </div>
+  <a
+    class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
+    href="{{parquet_url}}"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+      />
+    </svg>
+
+    Download {{ dataset_name }}
+  </a>
+</section>
+
+{% endblock %}

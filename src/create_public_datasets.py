@@ -1,5 +1,6 @@
 import asyncio
 import io
+import s3fs
 import os
 import tarfile
 import tempfile
@@ -19,6 +20,9 @@ from typing_extensions import cast
 
 from tasks.execute_and_upload_pg import execute_and_upload_pg
 from utils.walk_dir import walk_dir
+from utils.constants import *
+from utils.jinja import env
+from build_dataset_site import build_dataset_site
 
 ###
 # Define Constants
@@ -26,16 +30,8 @@ from utils.walk_dir import walk_dir
 
 s3_fs: RemoteFileSystem = cast(RemoteFileSystem, RemoteFileSystem.load("s3"))
 discord_notify: DiscordWebhook = cast(DiscordWebhook, DiscordWebhook.load("frog-of-knowledge-alerts"))
-dir_path = os.path.dirname(os.path.realpath(__file__))
-query_path = os.path.join(dir_path, "..", "queries", "public")
-assets_path = os.path.join(dir_path, "..", "assets")
 bucket_name = s3_fs.basepath.split("/")[-1]
 
-
-env = Environment(
-    loader=FileSystemLoader(os.path.join(dir_path, "templates")),
-    autoescape=select_autoescape(['html', 'xml'])
-)
 
 ###
 # Define Non-Task Helper Funcs
@@ -48,25 +44,28 @@ def handle_query(root: str, filename: str):
 
     with open(os.path.join(root, filename), "r") as f:
         s3_prefix = root.replace(query_path, "")
-        s3_path = "/".join([s3_prefix.rstrip("/"), filename.replace(".sql", ".parquet").lstrip("/")])
+        path_parts = [bucket_data_prefix, s3_prefix.strip("/"), filename.replace(".sql", ".parquet").strip("/")]
+        # Remove empty strings
+        s3_path = "/" + "/".join(
+            [pp for pp in path_parts if pp is not None and pp != ""]
+        )
+        
         return execute_and_upload_pg(f.read(), s3_path, s3_fs)
 
 ###
 # Define flow-specific tasks
 ###
 
-
-@task
-def sync_static_assets():
-    # TODO: Delete assets that no longer exist locally
-    s3_fs.put_directory(assets_path, "assets")
-
-
 @task
 def build_summary_page(query_bucket_paths: list[str], url_prefix: str, archive_files: list[str]):
+    """
+    DEPRECATED
+    """
     ddb = duckdb.connect(":memory:")
 
     query_metas = []
+
+    print(query_bucket_paths)
 
     for query_s3_path in query_bucket_paths:
         doc_path = os.path.join(query_path, query_s3_path.replace(".parquet", ".md").lstrip("/"))
@@ -125,7 +124,7 @@ def build_archive(query_paths: list[str], url_prefix: str):
 
         date_string = now.strftime("%Y-%m-%d_%H-00")
 
-        s3_fs.write_path("all-datasets.tar.gz", tmp_file.read())
+        s3_fs.write_path(f"{bucket_data_prefix}/all-datasets.tar.gz", tmp_file.read())
         s3_fs.write_path(f"archives/{date_string}.tar.gz", tmp_file.read())
 
     return [
@@ -137,9 +136,25 @@ def build_archive(query_paths: list[str], url_prefix: str):
 # Define Flow
 ###
 
+@task
+def delete_existing_parquet():
+    fs = s3fs.S3FileSystem(
+        endpoint_url=s3_fs.settings.get('client_kwargs')['endpoint_url'],
+        secret=s3_fs.settings.get('secret'),
+        key=s3_fs.settings.get('key'),   
+    )
+
+    try:
+        fs.rm(f"{bucket_name}/{bucket_data_prefix}/", recursive=True)
+    except FileNotFoundError:
+        pass
+        
+
 
 @flow(name="Create Public Datasets", task_runner=DaskTaskRunner())
 async def create_public_datasets(public_url_prefix: str = "https://f004.backblazeb2.com/file/sprocket-artifacts"):
+    delete_existing_parquet()
+
     query_futures = walk_dir(query_path, handle_query)
     query_results = [r for r in await resolve_futures_to_data(query_futures) if r is not None]
     # Queries have all run
@@ -147,19 +162,21 @@ async def create_public_datasets(public_url_prefix: str = "https://f004.backblaz
 
     step_2_result = await resolve_futures_to_data([
         build_archive.submit(query_results, public_url_prefix),
-        sync_static_assets.submit()
+        # sync_static_assets.submit()
     ])
 
     archive_files: list[str] = step_2_result[0]
 
-    await resolve_futures_to_data([
-        build_summary_page.submit(query_results, public_url_prefix, archive_files)
-    ])
+    # await resolve_futures_to_data([
+    #     build_summary_page.submit(query_results, public_url_prefix, archive_files)
+    # ])
+
+    index_url = build_dataset_site(base_url=public_url_prefix)
 
     notify_string = f"""
     Public Datasets Updated 🔄🔄.
     Archive Point Created 💾💾.
-    Updated the [Summary]({public_url_prefix}/summary.html) 📙📙.
+    Updated the [Summary]({index_url}) 📙📙.
     """
     await discord_notify.notify(notify_string)
     print(notify_string)
