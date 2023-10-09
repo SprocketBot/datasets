@@ -1,3 +1,4 @@
 {
-  "Create Public Datasets": "src/create_public_datasets.py:create_public_datasets"
+  "Create Public Datasets": "src/create_public_datasets.py:create_public_datasets",
+  "build-doc-site": "src/build_dataset_site.py:build_dataset_site"
 }

@@ -124,7 +124,7 @@ def sync_static_assets():
     s3_fs.put_directory(assets_path, "public/assets")
 
 
-@flow(name="build-dataset", task_runner=DaskTaskRunner())
+@flow(name="build-doc-site", task_runner=DaskTaskRunner())
 def build_dataset_site(
     base_url="https://f004.backblazeb2.com/file/sprocket-artifacts",
     sync_assets=True,
