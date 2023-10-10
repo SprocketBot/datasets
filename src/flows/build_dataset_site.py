@@ -1,4 +1,5 @@
 import sys
+import os
 import tempfile
 
 import markdown2
@@ -6,20 +7,30 @@ import frontmatter
 import duckdb
 import s3fs
 
-from typing import cast
 from prefect import flow, task
-from prefect.filesystems import RemoteFileSystem
 from prefect_dask import DaskTaskRunner
 
-from .utils.constants import *
-from .utils.jinja import env
+from prefect.filesystems import RemoteFileSystem
+from typing import cast
+
+sys.path.append(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        ".."
+    )
+)
+
+from utils.constants import *
+from utils.jinja import env
 
 s3_fs: RemoteFileSystem = cast(RemoteFileSystem, RemoteFileSystem.load("s3"))
 
 
+
+
 @task
 def build_dataset_page(
-    bucket_path: str, docs_path: str, base_url: str, nav_elements: list[dict]
+        bucket_path: str, docs_path: str, base_url: str, nav_elements: list[dict]
 ):
     ddb = duckdb.connect(":memory:")
     if os.path.isfile(docs_path):
@@ -88,12 +99,12 @@ def build_archive_page(base_url: str, nav_elements: list[dict]):
     archives = fs.glob(f"{bucket_name}/archives/**/*.tar.gz")
 
     archive_items = [
-            {
-                "href": a.replace(bucket_name, ""),
-                "title": a.split("/")[-1],
-            }
-            for a in archives
-        ]
+        {
+            "href": a.replace(bucket_name, ""),
+            "title": a.split("/")[-1],
+        }
+        for a in archives
+    ]
     print(archive_items)
 
     archive_page_template = env.get_template("archive.jinja.html")
@@ -126,11 +137,11 @@ def sync_static_assets():
 
 @flow(name="build-doc-site", task_runner=DaskTaskRunner())
 def build_dataset_site(
-    base_url="https://f004.backblazeb2.com/file/sprocket-artifacts",
-    sync_assets=True,
-    rebuild_pages=True,
-    rebuild_index=True,
-    rebuild_archive_page=True
+        base_url="https://f004.backblazeb2.com/file/sprocket-artifacts",
+        sync_assets=True,
+        rebuild_pages=True,
+        rebuild_index=True,
+        rebuild_archive_page=True
 ):
     fs = s3fs.S3FileSystem(
         endpoint_url=s3_fs.settings.get("client_kwargs")["endpoint_url"],

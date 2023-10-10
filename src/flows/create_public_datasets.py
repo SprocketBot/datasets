@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import io
 import s3fs
 import os
@@ -18,11 +19,18 @@ from prefect.futures import resolve_futures_to_data
 from prefect_dask import DaskTaskRunner
 from typing_extensions import cast
 
-from .tasks.execute_and_upload_pg import execute_and_upload_pg
-from .utils.walk_dir import walk_dir
-from .utils.constants import *
-from .utils.jinja import env
-from .build_dataset_site import build_dataset_site
+sys.path.append(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        ".."
+    )
+)
+
+from tasks.execute_and_upload_pg import execute_and_upload_pg
+from utils.walk_dir import walk_dir
+from utils.constants import *
+from utils.jinja import env
+from flows.build_dataset_site import build_dataset_site
 
 ###
 # Define Constants
@@ -32,6 +40,12 @@ s3_fs: RemoteFileSystem = cast(RemoteFileSystem, RemoteFileSystem.load("s3"))
 discord_notify: DiscordWebhook = cast(DiscordWebhook, DiscordWebhook.load("frog-of-knowledge-alerts"))
 bucket_name = s3_fs.basepath.split("/")[-1]
 
+###
+# Add directory to python path to simplify life
+###
+
+import sys
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 ###
 # Define Non-Task Helper Funcs

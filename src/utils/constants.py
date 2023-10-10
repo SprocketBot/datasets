@@ -1,5 +1,5 @@
 from prefect.filesystems import RemoteFileSystem
-from typing_extensions import cast
+from typing import cast
 import os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
