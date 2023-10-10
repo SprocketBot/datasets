@@ -18,11 +18,11 @@ from prefect.futures import resolve_futures_to_data
 from prefect_dask import DaskTaskRunner
 from typing_extensions import cast
 
-from tasks.execute_and_upload_pg import execute_and_upload_pg
-from utils.walk_dir import walk_dir
-from utils.constants import *
-from utils.jinja import env
-from build_dataset_site import build_dataset_site
+from .tasks.execute_and_upload_pg import execute_and_upload_pg
+from .utils.walk_dir import walk_dir
+from .utils.constants import *
+from .utils.jinja import env
+from .build_dataset_site import build_dataset_site
 
 ###
 # Define Constants

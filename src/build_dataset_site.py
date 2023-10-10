@@ -11,8 +11,8 @@ from prefect import flow, task
 from prefect.filesystems import RemoteFileSystem
 from prefect_dask import DaskTaskRunner
 
-from utils.constants import *
-from utils.jinja import env
+from .utils.constants import *
+from .utils.jinja import env
 
 s3_fs: RemoteFileSystem = cast(RemoteFileSystem, RemoteFileSystem.load("s3"))
 

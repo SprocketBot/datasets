@@ -1,8 +1,8 @@
 from prefect import task
 from prefect.filesystems import RemoteFileSystem
 
-from utils.run_pg import run_pg
-from utils.write_parquet import write_parquet
+from ..utils.run_pg import run_pg
+from ..utils.write_parquet import write_parquet
 
 
 @task(task_run_name="exec-upload-{bucket_path}")
