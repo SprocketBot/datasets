@@ -13,6 +13,13 @@ from prefect_dask import DaskTaskRunner
 from prefect.filesystems import RemoteFileSystem
 from typing import cast
 
+sys.path.append(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "..",
+        ".."
+    )
+)
 from src.utils.constants import *
 from src.utils.jinja import env
 
@@ -66,6 +73,8 @@ def build_dataset_page(
         with open(os.path.join(tmp_dir, f"{set_name}.html"), "w") as f:
             f.write(page_content)
         s3_fs.put_directory(tmp_dir, "public")
+
+    return
 
 
 @task

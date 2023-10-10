@@ -1,5 +1,4 @@
 import asyncio
-import sys
 import io
 import s3fs
 import os
@@ -11,13 +10,12 @@ import duckdb
 import markdown2
 import pytz
 import requests
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 from prefect import flow, task
 from prefect.blocks.notifications import DiscordWebhook
 from prefect.filesystems import RemoteFileSystem
 from prefect.futures import resolve_futures_to_data
 from prefect_dask import DaskTaskRunner
-from typing_extensions import cast
+from typing import cast
 
 from src.tasks.execute_and_upload_pg import execute_and_upload_pg
 from src.utils.walk_dir import walk_dir
@@ -38,7 +36,15 @@ bucket_name = s3_fs.basepath.split("/")[-1]
 ###
 
 import sys
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+sys.path.append(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "..",
+        ".."
+    )
+)
+
 
 ###
 # Define Non-Task Helper Funcs
@@ -56,8 +62,9 @@ def handle_query(root: str, filename: str):
         s3_path = "/" + "/".join(
             [pp for pp in path_parts if pp is not None and pp != ""]
         )
-        
+
         return execute_and_upload_pg(f.read(), s3_path, s3_fs)
+
 
 ###
 # Define flow-specific tasks
@@ -139,6 +146,7 @@ def build_archive(query_paths: list[str], url_prefix: str):
         s3_fs.filesystem.ls(f"{bucket_name}/archives", False)
     ]
 
+
 ###
 # Define Flow
 ###
@@ -148,14 +156,13 @@ def delete_existing_parquet():
     fs = s3fs.S3FileSystem(
         endpoint_url=s3_fs.settings.get('client_kwargs')['endpoint_url'],
         secret=s3_fs.settings.get('secret'),
-        key=s3_fs.settings.get('key'),   
+        key=s3_fs.settings.get('key'),
     )
 
     try:
         fs.rm(f"{bucket_name}/{bucket_data_prefix}/", recursive=True)
     except FileNotFoundError:
         pass
-        
 
 
 @flow(name="Create Public Datasets", task_runner=DaskTaskRunner())
