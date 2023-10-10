@@ -13,19 +13,10 @@ from prefect_dask import DaskTaskRunner
 from prefect.filesystems import RemoteFileSystem
 from typing import cast
 
-sys.path.append(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        ".."
-    )
-)
-
-from utils.constants import *
-from utils.jinja import env
+from src.utils.constants import *
+from src.utils.jinja import env
 
 s3_fs: RemoteFileSystem = cast(RemoteFileSystem, RemoteFileSystem.load("s3"))
-
-
 
 
 @task

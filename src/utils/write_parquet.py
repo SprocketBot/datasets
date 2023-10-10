@@ -2,7 +2,7 @@ import atexit
 import tempfile
 import pyarrow
 from pyarrow import parquet
-from typing_extensions import Callable, Optional
+from typing import Callable, Optional
 
 
 def write_parquet(data: list[dict], outpath: Optional[str] = None) -> (str, Callable[[], None]):

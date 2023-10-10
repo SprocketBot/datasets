@@ -30,7 +30,7 @@ deployments:
   version: 1
   tags: []
   description:
-  entrypoint: ./src/create_public_datasets.py:create_public_datasets
+  entrypoint: ./src/flows/create_public_datasets.py:create_public_datasets
   parameters: {}
   work_pool:
     name: worker-pool
@@ -45,7 +45,7 @@ deployments:
   tags: []
   description: Uses files in S3 compatible storage to generate a documentation website
     for public-etl
-  entrypoint: ./src/build_dataset_site.py:build_dataset_site
+  entrypoint: ./src/flows/build_dataset_site.py:build_dataset_site
   work_pool:
     name: worker-pool
     work_queue_name:

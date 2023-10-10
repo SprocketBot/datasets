@@ -1,6 +1,6 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import regex as re
-from utils.constants import *
+from src.utils.constants import *
 
 env = Environment(
     loader=FileSystemLoader(templates_path),

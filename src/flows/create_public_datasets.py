@@ -19,18 +19,11 @@ from prefect.futures import resolve_futures_to_data
 from prefect_dask import DaskTaskRunner
 from typing_extensions import cast
 
-sys.path.append(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        ".."
-    )
-)
-
-from tasks.execute_and_upload_pg import execute_and_upload_pg
-from utils.walk_dir import walk_dir
-from utils.constants import *
-from utils.jinja import env
-from flows.build_dataset_site import build_dataset_site
+from src.tasks.execute_and_upload_pg import execute_and_upload_pg
+from src.utils.walk_dir import walk_dir
+from src.utils.constants import *
+from src.utils.jinja import env
+from src.flows.build_dataset_site import build_dataset_site
 
 ###
 # Define Constants

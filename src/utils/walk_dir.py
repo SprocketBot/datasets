@@ -1,6 +1,6 @@
 import os
 
-from typing_extensions import Callable, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
 
