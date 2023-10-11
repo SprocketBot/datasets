@@ -16,8 +16,8 @@ def walk_dir(root: str, file_fn: Callable = None, dir_fn: Callable = None, **kwa
     for each file found, passing the root directory and file name as parameters. It also calls the specified dir_fn
     function for each directory found, passing the root directory and directory name as parameters.
     """
+    results = []
     for root, dirs, files in os.walk(root):
-        results = []
         if file_fn:
             for file in files:
                 results.append(file_fn(root, file, **kwargs))
@@ -25,7 +25,7 @@ def walk_dir(root: str, file_fn: Callable = None, dir_fn: Callable = None, **kwa
             for directory in dirs:
                 results.append(dir_fn(root, directory, **kwargs))
 
-        return [r for r in results if r is not None]
+    return [r for r in results if r is not None]
 
 
 async def walk_dir_async(root: str, file_fn: Callable = None, dir_fn: Callable = None, **kwargs) -> list:
@@ -41,8 +41,8 @@ async def walk_dir_async(root: str, file_fn: Callable = None, dir_fn: Callable =
     for each file found, passing the root directory and file name as parameters. It also calls the specified dir_fn
     function for each directory found, passing the root directory and directory name as parameters.
     """
+    results = []
     for root, dirs, files in os.walk(root):
-        results = []
         if file_fn:
             for file in files:
                 results.append(await file_fn(root, file, **kwargs))

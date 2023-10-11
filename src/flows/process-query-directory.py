@@ -63,19 +63,18 @@ async def process_query_directory(
     flow_path_manager = PathManager(public_url_root=public_url_root, bucket_name=bucket_name, namespace=subdir)
     query_path = os.path.join(root_query_path, subdir)
 
-
     data_futures = []
     if refresh_parquet:
         ###
         # Cleanup
         ###
-        await delete_s3_path(flow_path_manager.data_path())
+        delete_future = await delete_s3_path.submit(flow_path_manager.data_path())
 
         ###
         # Execute all queries
         ###
         data_futures = await walk_dir_async(
-            query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path()
+            query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path(), wait_for=[delete_future]
         )
 
     archive_future = None
@@ -84,15 +83,13 @@ async def process_query_directory(
         # Create Archive
         ###
         archive_paths = flow_path_manager.get_archives_paths()
-        archive_future = await archive_s3_glob(
+        archive_future = await archive_s3_glob.submit(
             flow_path_manager.parquet_glob(),
             [
                 archive_paths["current"],
                 archive_paths["dated"]
             ], wait_for=data_futures
         )
-
-        await resolve_futures_to_data(data_futures + [archive_future])
 
     ###
     # Create documentation site!
@@ -109,7 +106,11 @@ async def process_query_directory(
             for datum in data_files
         ]
 
-        index_future = await build_index_page.submit(nav_elements=nav_elements, path_manager=flow_path_manager)
+        index_future = await build_index_page.submit(
+            nav_elements=nav_elements,
+            path_manager=flow_path_manager,
+            wait_for=data_futures
+        )
 
         data_page_futures = [
             await build_dataset_page.submit(
@@ -126,7 +127,8 @@ async def process_query_directory(
                 bucket_prefix=flow_path_manager.pages_path("s3"),
                 base_url=flow_path_manager.public_url_root,
                 pages_url=flow_path_manager.pages_path("http"),
-                path_manager=flow_path_manager
+                path_manager=flow_path_manager,
+                wait_for=data_futures
             )
             for data_file in data_files
         ]
@@ -157,7 +159,7 @@ async def process_query_directory(
     print(notify_string)
 
 
-async def handle_query(root: str, filename: str, ns: str, data_path: str):
+async def handle_query(root: str, filename: str, ns: str, data_path: str, wait_for):
     if not filename.endswith(".sql"):
         return
 
@@ -176,8 +178,8 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str):
         s3_path = "/" + "/".join(
             [slug for slug in slugs if slug is not None and slug != ""]
         )
-        return execute_and_upload_pg.submit(f.read(), s3_path, s3_fs)
+        return execute_and_upload_pg.submit(f.read(), s3_path, s3_fs, wait_for=wait_for)
 
 
 if __name__ == '__main__':
-    asyncio.run(process_query_directory(subdir="test", refresh_parquet=False,build_pages=False))
+    asyncio.run(process_query_directory(subdir="test"))
