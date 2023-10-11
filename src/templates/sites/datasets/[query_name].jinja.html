@@ -89,14 +89,13 @@ response = Net::HTTP.get_response(uri)
     </dd>
     <dt class="font-semibold text-xs font-gray-300 uppercase">R</dt>
     <dd>
-      <pre class="text-xs relative">
-            <code lang="r">library(jsonlite)
+      <pre class="text-xs relative"><code lang="r">library(jsonlite)
 {{ dataset_name }} <- fromJSON("{{ json_url }}")</code><spr-copy-button></spr-copy-button></pre>
     </dd>
     <dt class="font-semibold text-xs font-gray-300 uppercase">curl</dt>
     <dd>
       <pre class="text-xs relative"><code lang="bash"
-      >curl {{ json_url }} | jq</code><spr-copy-button></spr-copy-button></pre>
+>curl {{ json_url }} | jq</code><spr-copy-button></spr-copy-button></pre>
     </dd>
   </dl>
 </section>
