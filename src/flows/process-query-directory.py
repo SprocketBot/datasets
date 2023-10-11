@@ -42,7 +42,8 @@ from utils.walk_dir import walk_dir_async
 )
 async def process_query_directory(
         subdir='public',
-        public_url_root='https://f004.backblazeb2.com/file/sprocket-artifacts'
+        public_url_root='https://f004.backblazeb2.com/file/sprocket-artifacts',
+        refresh_parquet=True
 ):
     # this is needed for bucket pathing information.
     # this was originally built with B2, which uses path-style S3 instead of subdomains
@@ -60,31 +61,32 @@ async def process_query_directory(
     flow_path_manager = PathManager(public_url_root=public_url_root, bucket_name=bucket_name, namespace=subdir)
     query_path = os.path.join(root_query_path, subdir)
 
-    ###
-    # Cleanup
-    ###
-    await delete_s3_path(flow_path_manager.data_path())
+    if refresh_parquet:
+        ###
+        # Cleanup
+        ###
+        await delete_s3_path(flow_path_manager.data_path())
 
-    ###
-    # Execute all queries
-    ###
-    data_futures = await walk_dir_async(
-        query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path()
-    )
+        ###
+        # Execute all queries
+        ###
+        data_futures = await walk_dir_async(
+            query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path()
+        )
 
-    ###
-    # Create Archive
-    ###
-    archive_paths = flow_path_manager.get_archives_paths()
-    archive_future = await archive_s3_glob(
-        flow_path_manager.parquet_glob(),
-        [
-            archive_paths["current"],
-            archive_paths["dated"]
-        ], wait_for=data_futures
-    )
+        ###
+        # Create Archive
+        ###
+        archive_paths = flow_path_manager.get_archives_paths()
+        archive_future = await archive_s3_glob(
+            flow_path_manager.parquet_glob(),
+            [
+                archive_paths["current"],
+                archive_paths["dated"]
+            ], wait_for=data_futures
+        )
 
-    await resolve_futures_to_data(data_futures + [archive_future])
+        await resolve_futures_to_data(data_futures + [archive_future])
 
     ###
     # Create documentation site!
@@ -94,6 +96,7 @@ async def process_query_directory(
         {
             "href": flow_path_manager.get_page_url_from_parquet(datum),
             "title": ".".join(datum.split("/")[-1].split(".")[:-1]),
+            "prefix": " ".join(flow_path_manager.remove_prefixes(datum).split("/")[:-1])
         }
         for datum in data_files
     ]
@@ -114,7 +117,8 @@ async def process_query_directory(
             nav_elements=nav_elements,
             bucket_prefix=flow_path_manager.pages_path("s3"),
             base_url=flow_path_manager.public_url_root,
-            pages_url=flow_path_manager.pages_path("http")
+            pages_url=flow_path_manager.pages_path("http"),
+            path_manager=flow_path_manager
         )
         for data_file in data_files
     ]
@@ -138,8 +142,9 @@ async def process_query_directory(
     🔄| Public Datasets Updated |🔄.
     💾| Archive Point Created |💾.
     📙| Updated the [Book]({flow_path_manager.pages_path("http")}/index.html) |📙.
-    """  # TODO: Get URL
-    await discord_notify.notify(notify_string)
+    """
+    if subdir != "test":
+        await discord_notify.notify(notify_string)
     print(notify_string)
 
 
@@ -166,4 +171,4 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str):
 
 
 if __name__ == '__main__':
-    asyncio.run(process_query_directory())
+    asyncio.run(process_query_directory(subdir="test", refresh_parquet=False))

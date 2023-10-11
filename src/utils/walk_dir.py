@@ -50,4 +50,4 @@ async def walk_dir_async(root: str, file_fn: Callable = None, dir_fn: Callable =
             for directory in dirs:
                 results.append(await dir_fn(root, directory, **kwargs))
 
-        return [r for r in results if r is not None]
+    return [r for r in results if r is not None]

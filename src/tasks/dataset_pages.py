@@ -38,7 +38,8 @@ async def build_dataset_page(
         base_url: str,
         pages_url: str,
         nav_elements: list[dict],
-        bucket_prefix: str
+        bucket_prefix: str,
+        path_manager: PathManager
 ):
     s3_fs: RemoteFileSystem = await RemoteFileSystem.load("s3")
     ddb = duckdb.connect(":memory:")
@@ -59,7 +60,9 @@ async def build_dataset_page(
 
     query_page_template = env.get_template("[query_name].jinja.html")
 
+    set_subpath = path_manager.remove_prefixes("/".join(parquet_bucket_path.split("/")[:-1]))
     set_name = ".".join(parquet_bucket_path.split("/")[-1].split(".")[:-1])
+
     parquet_url = merge_strings(base_url, parquet_bucket_path)
     csv_url = merge_strings(base_url, csv_bucket_path)
     json_url = merge_strings(base_url, json_bucket_path)
@@ -86,10 +89,13 @@ async def build_dataset_page(
         pages_url=pages_url
     )
 
+    set_path = "/".join([*bucket_prefix.split("/"), *set_subpath.split("/")])
+    print(bucket_prefix, set_subpath, set_path)
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         with open(os.path.join(tmp_dir, f"{set_name}.html"), "w") as f:
             f.write(page_content)
-        await s3_fs.put_directory(tmp_dir, bucket_prefix)
+        await s3_fs.put_directory(tmp_dir, set_path)
 
     return
 

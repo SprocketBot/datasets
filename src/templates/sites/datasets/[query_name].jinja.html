@@ -5,7 +5,7 @@
 
 <section>
   <h3 class="uppercase text-sm font-bold text-gray-400">About:</h3>
-  <div class="prose">{{ docs|safe }}</div>
+  <div class="prose">{{ docs|safe|default("No description has been provided for this set", true) }}</div>
 </section>
 
 <section>

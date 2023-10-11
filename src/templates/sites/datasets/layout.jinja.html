@@ -116,24 +116,32 @@
           </a>
           <hr class="my-2" />
 
-          <ul class="text-sm flex flex-col gap-1">
-            {% for el in nav_elements %} {% set active = el.title ==
-            dataset_name %}
+            <section class="flex flex-col gap-2">
+            {% for category, items in nav_elements|groupby("prefix") %}
+            <ul class="text-sm flex flex-col gap-1">
+            {% if category %}
+                <li class="text-sm text-gray-400 uppercase font-bold">{{ category }}</li>
+            {% endif %}
+            {% for el in items %}
+                {% set active = el.title == dataset_name %}
 
-            <li>
-              <a href="{{el.href}}">
-                <button
-                  class="border-primary {{ 'border-l-2 pl-1 pr-2 font-bold' if active else 'border-0 px-2' }}
-                  text-white
-                  hover:text-gray-200 hover:scale-105
-                  active:text-gray-400 active:scale-110 transition-all text-sm
-                  capitalize">
-                  {{el.title|replace("_", " ")}}
-                </button>
-              </a>
-            </li>
+                <li>
+                  <a href="{{el.href}}">
+                    <button
+                      class="border-primary {{ 'border-l-2 pl-1 pr-2 font-bold' if active else 'border-0 px-2' }}
+                      text-white
+                      hover:text-gray-200 hover:scale-105
+                      active:text-gray-400 active:scale-110 transition-all text-sm
+                      capitalize">
+                      {{el.title|replace("_", " ")}}
+                    </button>
+                  </a>
+                </li>
             {% endfor %}
-          </ul>
+            </ul>
+        {% endfor %}
+            </section>
+
         </nav>
 
         <footer class="w-full flex flex-col gap-1">
