@@ -55,8 +55,10 @@
       href="./assets/favicon/safari-pinned-tab.svg"
       color="#febf2b" />
 
-        <!-- Analytics -->
-      <script async src="https://analytics.eu.umami.is/script.js" data-website-id="b65926fc-a287-4643-bc90-6accd6f575e7"></script>
+      {% if "test" not in pages_url %}
+          <!-- Analytics -->
+          <script async src="https://analytics.eu.umami.is/script.js" data-website-id="b65926fc-a287-4643-bc90-6accd6f575e7"></script>
+      {% endif %}
 
     <!-- OpenGraph -->
     <meta
@@ -78,7 +80,7 @@
     <script src="{{pages_url}}/assets/tailwind.config.js"></script>
 
     <!-- Load Custom elements library -->
-    <script src="./assets/dist/lib.js"></script>
+    <script src="{{ pages_url }}/assets/dist/lib.js"></script>
     <style>
       spr-copy-button {
         height: 0;

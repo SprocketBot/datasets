@@ -131,7 +131,7 @@ async def build_archive_page(nav_elements: list[dict], path_manager: PathManager
 
     archive_items = [
         {
-            "href": a.replace(path_manager.bucket_name, ""),
+            "href": path_manager.archive_path(path_manager.remove_prefixes(a)),
             "title": a.split("/")[-1],
         }
         for a in archives

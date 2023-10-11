@@ -4,3 +4,4 @@ env
 ./public
 .env
 Sprocket DS.session.sql
+.idea

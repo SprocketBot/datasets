@@ -33,8 +33,16 @@ class PathManager:
     def page_path(self, path: str, path_type: str):
         return f"{self.pages_path(path_type)}/{path}"
 
-    def archives_path(self):
-        return f"{self.namespace}/{archives_prefix}"
+    def archives_path(self, path_type: str = "s3"):
+        if path_type == "s3":
+            return f"{self.namespace}/{archives_prefix}"
+        elif path_type == "http":
+            return f"{self.public_url_root}/{self.namespace}/{archives_prefix}"
+        else:
+            raise Exception(f"Must provide expected type of path '{path_type}' is not valid.")
+
+    def archive_path(self, path: str, path_type: str = "http"):
+        return f"{self.archives_path(path_type)}/{path}"
 
     def remove_prefixes(self, path: str):
         parts = path.split("/")

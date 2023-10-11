@@ -43,8 +43,10 @@ async def archive_s3_glob(glob: str, outpaths: list[str]):
                     # Add to the archive
                     tar.addfile(info, mem_file)
 
+        content = tmp_file.read()
+
         for output_path in outpaths:
             await s3_fs.write_path(
                 output_path,
-                tmp_file.read()
+                content
             )

@@ -43,7 +43,9 @@ from utils.walk_dir import walk_dir_async
 async def process_query_directory(
         subdir='public',
         public_url_root='https://f004.backblazeb2.com/file/sprocket-artifacts',
-        refresh_parquet=True
+        refresh_parquet=True,
+        create_archive=True,
+        build_pages=True
 ):
     # this is needed for bucket pathing information.
     # this was originally built with B2, which uses path-style S3 instead of subdomains
@@ -61,6 +63,8 @@ async def process_query_directory(
     flow_path_manager = PathManager(public_url_root=public_url_root, bucket_name=bucket_name, namespace=subdir)
     query_path = os.path.join(root_query_path, subdir)
 
+
+    data_futures = []
     if refresh_parquet:
         ###
         # Cleanup
@@ -74,6 +78,8 @@ async def process_query_directory(
             query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path()
         )
 
+    archive_future = None
+    if create_archive:
         ###
         # Create Archive
         ###
@@ -91,51 +97,54 @@ async def process_query_directory(
     ###
     # Create documentation site!
     ###
-    data_files = fs.glob(flow_path_manager.parquet_glob())
-    nav_elements = [
-        {
-            "href": flow_path_manager.get_page_url_from_parquet(datum),
-            "title": ".".join(datum.split("/")[-1].split(".")[:-1]),
-            "prefix": " ".join(flow_path_manager.remove_prefixes(datum).split("/")[:-1])
-        }
-        for datum in data_files
-    ]
 
-    index_future = await build_index_page.submit(nav_elements=nav_elements, path_manager=flow_path_manager)
+    if build_pages:
+        data_files = fs.glob(flow_path_manager.parquet_glob())
+        nav_elements = [
+            {
+                "href": flow_path_manager.get_page_url_from_parquet(datum),
+                "title": ".".join(datum.split("/")[-1].split(".")[:-1]),
+                "prefix": " ".join(flow_path_manager.remove_prefixes(datum).split("/")[:-1])
+            }
+            for datum in data_files
+        ]
 
-    data_page_futures = [
-        await build_dataset_page.submit(
-            parquet_bucket_path=data_file,
-            csv_bucket_path=flow_path_manager.change_file_extension(data_file, "csv"),
-            json_bucket_path=flow_path_manager.change_file_extension(data_file, "json"),
-            docs_path=os.path.join(
-                query_path,
-                flow_path_manager.change_file_extension(
-                    flow_path_manager.remove_prefixes(data_file),
-                    "md")
-            ),
+        index_future = await build_index_page.submit(nav_elements=nav_elements, path_manager=flow_path_manager)
+
+        data_page_futures = [
+            await build_dataset_page.submit(
+                parquet_bucket_path=data_file,
+                csv_bucket_path=flow_path_manager.change_file_extension(data_file, "csv"),
+                json_bucket_path=flow_path_manager.change_file_extension(data_file, "json"),
+                docs_path=os.path.join(
+                    query_path,
+                    flow_path_manager.change_file_extension(
+                        flow_path_manager.remove_prefixes(data_file),
+                        "md")
+                ),
+                nav_elements=nav_elements,
+                bucket_prefix=flow_path_manager.pages_path("s3"),
+                base_url=flow_path_manager.public_url_root,
+                pages_url=flow_path_manager.pages_path("http"),
+                path_manager=flow_path_manager
+            )
+            for data_file in data_files
+        ]
+
+        archive_future = await build_archive_page.submit(
             nav_elements=nav_elements,
-            bucket_prefix=flow_path_manager.pages_path("s3"),
-            base_url=flow_path_manager.public_url_root,
-            pages_url=flow_path_manager.pages_path("http"),
-            path_manager=flow_path_manager
+            path_manager=flow_path_manager,
+            wait_for=archive_future
         )
-        for data_file in data_files
-    ]
 
-    archive_future = await build_archive_page.submit(
-        nav_elements=nav_elements,
-        path_manager=flow_path_manager
-    )
+        assets_future = await sync_s3_dir.submit(
+            bucket_name=flow_path_manager.bucket_name,
+            bucket_path=flow_path_manager.page_path("assets", "s3"),
+            local_path=assets_path
+        )
 
-    assets_future = await sync_s3_dir.submit(
-        bucket_name=flow_path_manager.bucket_name,
-        bucket_path=flow_path_manager.page_path("assets", "s3"),
-        local_path=assets_path
-    )
-
-    page_futures = [assets_future, index_future, archive_future] + data_page_futures
-    await resolve_futures_to_data(page_futures)
+        page_futures = [assets_future, index_future, archive_future] + data_page_futures
+        await resolve_futures_to_data(page_futures)
 
     discord_notify = await DiscordWebhook.load("frog-of-knowledge-alerts")
     notify_string = f"""
@@ -171,4 +180,4 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str):
 
 
 if __name__ == '__main__':
-    asyncio.run(process_query_directory(subdir="test", refresh_parquet=False))
+    asyncio.run(process_query_directory(subdir="test", refresh_parquet=False,build_pages=False))
