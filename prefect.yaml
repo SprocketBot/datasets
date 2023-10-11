@@ -26,11 +26,12 @@ pull:
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
-- name: public-etl
-  version: 1
+- name: public
+  version:
   tags: []
-  description:
-  entrypoint: ./src/flows/create_public_datasets.py:create_public_datasets
+  description: Executes all queries in {subdir}, publishes them to S3 compatible storage,
+    and constructs a documentation site based on the provided markdown with examples
+  entrypoint: src/flows/process-query-directory.py:process_query_directory
   parameters: {}
   work_pool:
     name: worker-pool
@@ -38,17 +39,5 @@ deployments:
     job_variables: {}
   schedule:
     cron: 0 */6 * * *
-    timezone: EST
+    timezone: America/New_York
     day_or: true
-- name: build-docs-site
-  version: 1
-  tags: []
-  description: Uses files in S3 compatible storage to generate a documentation website
-    for public-etl
-  entrypoint: ./src/flows/build_dataset_site.py:build_dataset_site
-  work_pool:
-    name: worker-pool
-    work_queue_name:
-    job_variables: {}
-  parameters: {}
-  schedule:

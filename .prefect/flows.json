@@ -1,4 +1,3 @@
 {
-  "Create Public Datasets": "src/flows/create_public_datasets.py:create_public_datasets",
-  "build-doc-site": "src/flows/build_dataset_site.py:build_dataset_site"
+  "Publish Data": "src/flows/process-query-directory.py:process_query_directory"
 }

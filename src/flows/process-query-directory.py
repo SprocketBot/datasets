@@ -36,13 +36,9 @@ from utils.walk_dir import walk_dir_async
 @flow(
     log_prints=True,
     name="Publish Data",
-    flow_run_name=" '{subdir}' queries",
+    flow_run_name="{subdir} queries",
     task_runner=DaskTaskRunner(),
-    description="""
-    Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a documentation site
-    based on the provided markdown with examples
-    """,
-    cache_result_in_memory=False
+    description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a documentation site based on the provided markdown with examples",
 )
 async def process_query_directory(
         subdir='public',
