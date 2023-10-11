@@ -90,7 +90,8 @@ def build_index_page(base_url: str, nav_elements: list[dict]):
 
 
 @task
-def build_archive_page(base_url: str, nav_elements: list[dict]):
+async def build_archive_page(base_url: str, nav_elements: list[dict]):
+    bucket_name = await get_bucket_name()
     fs = s3fs.S3FileSystem(
         endpoint_url=s3_fs.settings.get("client_kwargs")["endpoint_url"],
         secret=s3_fs.settings.get("secret"),
@@ -105,7 +106,6 @@ def build_archive_page(base_url: str, nav_elements: list[dict]):
         }
         for a in archives
     ]
-    print(archive_items)
 
     archive_page_template = env.get_template("archive.jinja.html")
     page_content = archive_page_template.render(
@@ -120,7 +120,8 @@ def build_archive_page(base_url: str, nav_elements: list[dict]):
 
 
 @task
-def sync_static_assets():
+async def sync_static_assets():
+    bucket_name = get_bucket_name()
     fs = s3fs.S3FileSystem(
         endpoint_url=s3_fs.settings.get("client_kwargs")["endpoint_url"],
         secret=s3_fs.settings.get("secret"),
@@ -136,13 +137,14 @@ def sync_static_assets():
 
 
 @flow(name="build-doc-site", task_runner=DaskTaskRunner())
-def build_dataset_site(
+async def build_dataset_site(
         base_url="https://f004.backblazeb2.com/file/sprocket-artifacts",
         sync_assets=True,
         rebuild_pages=True,
         rebuild_index=True,
         rebuild_archive_page=True
 ):
+    bucket_name = get_bucket_name()
     fs = s3fs.S3FileSystem(
         endpoint_url=s3_fs.settings.get("client_kwargs")["endpoint_url"],
         secret=s3_fs.settings.get("secret"),
@@ -184,13 +186,9 @@ def build_dataset_site(
 
 
 if __name__ == "__main__":
-    rebuild_pages = "--rebuild-pages" in sys.argv
-    rebuild_index = "--rebuild-index" in sys.argv
-    sync_assets = "--sync-assets" in sys.argv
-    rebuild_archive_page = "--rebuild-archive" in sys.argv
     build_dataset_site(
-        rebuild_pages=rebuild_pages,
-        sync_assets=sync_assets,
-        rebuild_index=rebuild_index,
-        rebuild_archive_page=rebuild_archive_page
+        rebuild_pages="--rebuild-pages" in sys.argv,
+        sync_assets="--sync-assets" in sys.argv,
+        rebuild_index="--rebuild-index" in sys.argv,
+        rebuild_archive_page="--rebuild-archive" in sys.argv
     )

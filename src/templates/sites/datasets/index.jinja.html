@@ -1,162 +1,169 @@
 {% extends "layout.jinja.html" %} {% block main %}
 
-<h2 class="text-2xl font-bolder text-primary mb-2">Sprocket Data Sets</h2>
-
-<section>
-  <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The What:</h3>
-  <p class="my-2">
-    This website documents the datasets that are provided by the
-    <a
-      class="font-medium underline hover:no-underline inline-block"
-      href="https://github.com/Sprocketbot"
-      target="_blank">
-      Sprocket
-    </a>
-    platform. They are all provided in the
-    <a
-      class="italic font-medium underline hover:no-underline inline-block"
-      href="https://parquet.apache.org/"
-      target="_blank">
-      parquet
-    </a>
-    format; which acts similarly to a CSV, but is much smaller.
-  </p>
-  <p>
-    Parquet is also frequently used with
-    <a
-      class="italic font-medium underline hover:no-underline inline-block"
-      href="https://duckdb.org"
-      target="_blank">
-      DuckDB
-    </a>
-    for a quick way to start working with the data. DuckDB supports loading
-    parquet files without downloading them, so most examples here will assume
-    that you are using it.
-  </p>
-</section>
-
-<section class="">
-  <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The How:</h3>
-
-  <p class="mb-2">
-    This is not an exhaustive list of tools that are compatible with the parquet
-    format, but it has a couple options that can help you get started.
-  </p>
-  <p>
-    The quickest way to get started is with the
-    <a
-      href="https://shell.duckdb.org"
-      class="font-medium underline hover:no-underline inline-block"
-      target="_blank">
-      DuckDB Web Console, </a
-    >which runs an instance of DuckDB in your browser, or with
-  </p>
-
-  <div class="flex flex-col gap-2 mt-4">
-    <section>
-      <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
-        Command line tools
-      </h4>
-      <ul class="flex flex-col gap-1 list-disc">
-        <li class="ml-4">
-          <a
-            class="block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-            href="https://harlequin.sh/"
-            target="_blank">
-            Harlequin
-          </a>
-          <i class="text-xs text-50"
-            >A drop-in replacement for the DuckDB CLI.</i
-          >
-        </li>
-        <li class="ml-4">
-          <a
-            class="block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-            href="https://duckdb.org/docs/installation/index"
-            target="_blank">
-            DuckDB CLI
-          </a>
-          <i class="text-xs text-50">The official command line for DuckDB</i>
-        </li>
-      </ul>
-    </section>
+    <h2 class="text-2xl font-bolder text-primary mb-2">Sprocket Data Sets</h2>
 
     <section>
-      <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
-        Browser Based Tools
-      </h4>
-      <ul class="flex flex-col gap-1 list-disc">
-        <li class="ml-4">
-          <a
-            href="https://shell.duckdb.org"
-            target="_blank"
-            class="block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-            >DuckDB Web Console</a
-          >
-          <i class="text-xs text-50"
-            >A transient, in-memory database running in your browser, 0 setup
-            required</i
-          >
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
-        Desktop Tools
-      </h4>
-      <ul class="flex flex-col gap-1 list-disc">
-        <li class="ml-4">
-          <a
-            class="block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-            href="https://tadviewer.com"
-            target="_blank">
-            Tad
-          </a>
-          <i class="text-xs text-50">
-            A fast, free, cross-platform tabular data viewer application powered
-            by DuckDB.
-          </i>
-        </li>
-        <li class="ml-4">
-          <a
-            class="block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-            href="https://www.timestored.com/qstudio/"
-            target="_blank">
-            qStudio
-          </a>
-          <i class="text-xs text-50"
-            >A free SQL tool specialized for data analysts. It runs on every
-            operating system and allows easy browsing of tables and charting of
-            results.
-          </i>
-        </li>
-        <li class="ml-4">
-          <p>
+        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The What:</h3>
+        <p class="my-2">
+            This website documents the datasets that are provided by the
             <a
-              class="text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-              href="https://dbeaver.io/"
-              target="_blank">
-              DBeaver
+                    class="font-medium underline hover:no-underline inline-block"
+                    href="https://github.com/Sprocketbot"
+                    target="_blank">
+                Sprocket
             </a>
-            <sup>
-              <a
-                class="text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize"
-                href="https://duckdb.org/docs/guides/sql_editors/dbeaver.html"
-                target="_blank">
-                See Also
-              </a>
-            </sup>
-          </p>
-          <i class="text-xs text-50">
-            DBeaver Community is a free cross-platform database tool for
-            developers, database administrators, analysts, and everyone working
-            with data.
-          </i>
-        </li>
-      </ul>
+            platform.
+            They are all provided in the
+            <a
+                    class="italic font-medium underline hover:no-underline inline-block"
+                    href="https://parquet.apache.org/"
+                    target="_blank">
+                parquet
+            </a>
+            format; which acts similarly to a CSV, but is much smaller.
+        </p>
+        <p>
+            Parquet is also frequently used with
+            <a
+                    class="italic font-medium underline hover:no-underline inline-block"
+                    href="https://duckdb.org"
+                    target="_blank">
+                DuckDB
+            </a>
+            for a quick way to start working with the data.
+            DuckDB supports loading
+            parquet files without downloading them, so most examples here will assume
+            that you are using it.
+        </p>
+
+        <p>
+            Alternatively; <span class="font-mono">csv</span> and <span class="font-mono">json</span> formats are also
+            available
+            for usage with Google Sheets, or directly on a website.
+        </p>
     </section>
-  </div>
-</section>
+
+    <section class="">
+        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The How:</h3>
+
+        <p class="mb-2">
+            This is not an exhaustive list of tools that are compatible with the parquet
+            format, but it has a couple options that can help you get started.
+        </p>
+        <p>
+            The quickest way to get started is with the
+            <a
+                    href="https://shell.duckdb.org"
+                    class="font-medium underline hover:no-underline inline-block"
+                    target="_blank">
+                DuckDB Web Console, </a
+            >which runs an instance of DuckDB in your browser, or with
+        </p>
+
+        <div class="flex flex-col gap-2 mt-4">
+            <section>
+                <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
+                    Command line tools
+                </h4>
+                <ul class="flex flex-col gap-1 list-disc">
+                    <li class="ml-4">
+                        <a
+                                class="block"
+                                href="https://harlequin.sh/"
+                                target="_blank">
+                            <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">Harlequin</span>
+                        </a>
+                        <i class="text-xs text-50"
+                        >A drop-in replacement for the DuckDB CLI.</i
+                        >
+                    </li>
+                    <li class="ml-4">
+                        <a
+                                class="block"
+                                href="https://duckdb.org/docs/installation/index"
+                                target="_blank">
+                            <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">DuckDB CLI</span>
+                        </a>
+                        <i class="text-xs text-50">The official command line for DuckDB</i>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
+                    Browser Based Tools
+                </h4>
+                <ul class="flex flex-col gap-1 list-disc">
+                    <li class="ml-4">
+                        <a
+                                href="https://shell.duckdb.org"
+                                target="_blank"
+                                class="block"
+                        >
+                            <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">DuckDB Web Console</span>
+                        </a>
+                        <i class="text-xs text-50">
+                            A transient, in-memory database running in your browser, 0 setup
+                            required
+                        </i>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h4 class="font-semibold text-xs text-gray-300 uppercase mb-1">
+                    Desktop Tools
+                </h4>
+                <ul class="flex flex-col gap-1 list-disc">
+                    <li class="ml-4">
+                        <a
+                                class="block"
+                                href="https://tadviewer.com"
+                                target="_blank">
+                            <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">Tad</span>
+                        </a>
+                        <i class="text-xs text-50">
+                            A fast, free, cross-platform tabular data viewer application powered
+                            by DuckDB.
+                        </i>
+                    </li>
+                    <li class="ml-4">
+                        <a
+                                class="block"
+                                href="https://www.timestored.com/qstudio/"
+                                target="_blank">
+                            <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">qStudio</span>
+                        </a>
+                        <i class="text-xs text-50">
+                            A free SQL tool specialized for data analysts. It runs on every
+                            operating system and allows easy browsing of tables and charting of
+                            results.
+                        </i>
+                    </li>
+                    <li class="ml-4">
+                        <p>
+                            <a
+                                    href="https://dbeaver.io/"
+                                    target="_blank">
+                                <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">DBeaver</span>
+                            </a>
+                            <sup>
+                                <a
+                                        href="https://duckdb.org/docs/guides/sql_editors/dbeaver.html"
+                                        target="_blank">
+                                    <span class="inline-block text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all capitalize">See Also</span>
+                                </a>
+                            </sup>
+                        </p>
+                        <i class="text-xs text-50">
+                            DBeaver Community is a free cross-platform database tool for
+                            developers, database administrators, analysts, and everyone working
+                            with data.
+                        </i>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </section>
 
 {% endblock %}

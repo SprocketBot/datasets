@@ -79,8 +79,6 @@ def build_summary_page(query_bucket_paths: list[str], url_prefix: str, archive_f
 
     query_metas = []
 
-    print(query_bucket_paths)
-
     for query_s3_path in query_bucket_paths:
         doc_path = os.path.join(query_path, query_s3_path.replace(".parquet", ".md").lstrip("/"))
 

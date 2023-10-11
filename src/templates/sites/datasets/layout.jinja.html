@@ -7,8 +7,7 @@
 
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css"
-    />
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 
     <!-- and it's easy to individually load additional languages -->
@@ -19,55 +18,61 @@
     </script>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
 
     <!-- Favicons -->
-    <link rel="icon" href="./assets/favicon/favicon.ico" />
+    <link
+      rel="icon"
+      href="./assets/favicon/favicon.ico" />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="./assets/favicon/apple-touch-icon.png"
-    />
+      href="./assets/favicon/apple-touch-icon.png" />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="./assets/favicon/favicon-32x32.png"
-    />
+      href="./assets/favicon/favicon-32x32.png" />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="./assets/favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="./assets/favicon/site.webmanifest" />
+      href="./assets/favicon/favicon-16x16.png" />
+    <link
+      rel="manifest"
+      href="./assets/favicon/site.webmanifest" />
     <link
       rel="mask-icon"
       href="./assets/favicon/safari-pinned-tab.svg"
-      color="#febf2b"
-    />
+      color="#febf2b" />
 
     <!-- OpenGraph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Sprocket Public Datasets" />
+    <meta
+      property="og:type"
+      content="website" />
+    <meta
+      property="og:title"
+      content="Sprocket Public Datasets" />
     <meta
       property="og:url"
-      content="https://f004.backblazeb2.com/file/sprocket-artifacts/public/summary.html"
-    />
+      content="{{pages_url}}/index.html" />
     <!-- TODO: Get source asset to modify
             <meta property="og:image" content="">
         -->
     <meta
       property="og:description"
-      content="List of datasets that are exported from the Sprocket Database to enable community members to perform their own analyses"
-    />
+      content="List of datasets that are exported from the Sprocket Database to enable community members to perform their own analyses" />
 
-    <script src="./assets/tailwind.config.js"></script>
+    <script src="{{pages_url}}/assets/tailwind.config.js"></script>
 
     <!-- Load Custom elements library -->
     <script src="./assets/dist/lib.js"></script>
@@ -78,21 +83,32 @@
     </style>
 
     {% for el in nav_elements %}
-      <link rel="prefetch" href="{{ el.href }}" as="document">
+    <link
+      rel="prefetch"
+      href="{{ el.href }}"
+      as="document" />
     {% endfor %}
-    <link rel="prefetch" href="{{base_url}}/public/index.html" as="document">
-    <link rel="prefetch" href="{{base_url}}/public/archive.html" as="document">
+    <link
+      rel="prefetch"
+      href="{{pages_url}}/index.html"
+      as="document" />
+    <link
+      rel="prefetch"
+      href="{{pages_url}}/archive.html"
+      as="document" />
   </head>
 
   <body class="bg-gray-800 text-gray-100">
     <div
       id="layout"
-      class="h-screen w-screen grid grid-cols-12 gap-4"
-    >
-      <aside class="col-span-3 flex flex-col justify-between h-full w-full pl-4 py-8 bg-gray-700">
+      class="h-screen w-screen grid grid-cols-12 gap-4">
+      <aside
+        class="col-span-3 flex flex-col justify-between h-full w-full px-4 py-8 bg-gray-700">
         <nav>
-          <a href="{{base_url}}/public/index.html">
-            <img src="./assets/sprocket.svg" class="h-8" />
+          <a href="{{pages_url}}/index.html">
+            <img
+              src="{{ pages_url }}/assets/sprocket.svg"
+              class="h-8" />
             <h1 class="text-center font-bold mt-2">Public Datasets</h1>
           </a>
           <hr class="my-2" />
@@ -108,8 +124,7 @@
                   text-white
                   hover:text-gray-200 hover:scale-105
                   active:text-gray-400 active:scale-110 transition-all text-sm
-                  capitalize"
-                >
+                  capitalize">
                   {{el.title|replace("_", " ")}}
                 </button>
               </a>
@@ -120,26 +135,25 @@
 
         <footer class="w-full flex flex-col gap-1">
           <a
-            href="{{base_url}}/public/archive.html"
-            class="text-sm text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all"
-          >
+            href="{{pages_url}}/archive.html"
+            class="text-sm text-white hover:text-gray-200 hover:scale-105 active:text-gray-400 active:scale-110 transition-all">
             View Archived Datasets
           </a>
 
-          <a href="https://shell.duckdb.org" target="_blank" class="w-full">
+          <a
+            href="https://shell.duckdb.org"
+            target="_blank"
+            class="w-full">
             <button
-              class="flex gap-1 items-center justify-start w-full text-white fill-white hover:text-gray-200 hover:fill-gray-200 hover:scale-105 active:text-gray-400 active:fill-gray-400 active:scale-110 transition-all text-sm"
-            >
+              class="flex gap-1 items-center justify-start w-full text-white fill-white hover:text-gray-200 hover:fill-gray-200 hover:scale-105 active:text-gray-400 active:fill-gray-400 active:scale-110 transition-all text-sm">
               <svg
                 role="img"
                 class="w-4"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+                xmlns="http://www.w3.org/2000/svg">
                 <title>DuckDB</title>
                 <path
-                  d="M12 0C5.363 0 0 5.363 0 12s5.363 12 12 12 12-5.363 12-12S18.637 0 12 0zM9.502 7.03a4.974 4.974 0 0 1 4.97 4.97 4.974 4.974 0 0 1-4.97 4.97A4.974 4.974 0 0 1 4.532 12a4.974 4.974 0 0 1 4.97-4.97zm6.563 3.183h2.351c.98 0 1.787.782 1.787 1.762s-.807 1.789-1.787 1.789h-2.351v-3.551z"
-                />
+                  d="M12 0C5.363 0 0 5.363 0 12s5.363 12 12 12 12-5.363 12-12S18.637 0 12 0zM9.502 7.03a4.974 4.974 0 0 1 4.97 4.97 4.974 4.974 0 0 1-4.97 4.97A4.974 4.974 0 0 1 4.532 12a4.974 4.974 0 0 1 4.97-4.97zm6.563 3.183h2.351c.98 0 1.787.782 1.787 1.762s-.807 1.789-1.787 1.789h-2.351v-3.551z" />
               </svg>
               <p>Open a shell</p>
             </button>
@@ -148,8 +162,7 @@
       </aside>
 
       <main
-        class="col-span-9 flex flex-col gap-2 overflow-y-auto h-full w-full py-8 pr-4"
-      >
+        class="col-span-9 flex flex-col gap-2 overflow-y-auto h-full w-full py-8 pr-4">
         {% block main %} {% endblock %}
       </main>
     </div>
