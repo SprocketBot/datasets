@@ -21,4 +21,3 @@ FROM sprocket.scrim_meta scrim
     INNER JOIN sprocket.round r ON r."matchId" = m.id
     INNER JOIN sprocket.player_stat_line psl ON psl."roundId" = r.id
 GROUP BY 1
-LIMIT 5
