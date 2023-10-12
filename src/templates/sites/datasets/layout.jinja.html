@@ -81,6 +81,7 @@
 
     <!-- Load Custom elements library -->
     <script src="{{ pages_url }}/assets/dist/lib.js"></script>
+    <script>window.pages_url = "{{ pages_url }}"</script>
     <style>
       spr-copy-button {
         height: 0;
@@ -113,7 +114,7 @@
           <a href="{{pages_url}}/index.html">
             <img
               src="{{ pages_url }}/assets/sprocket.svg"
-              class="h-8" />
+              class="h-8 mx-auto" />
             <h1 class="text-center font-bold mt-2">Public Datasets</h1>
           </a>
           <hr class="my-2" />
@@ -158,7 +159,7 @@
             target="_blank"
             class="w-full">
             <button
-              class="flex gap-1 items-center justify-start w-full text-white fill-white hover:text-gray-200 hover:fill-gray-200 hover:scale-105 active:text-gray-400 active:fill-gray-400 active:scale-110 transition-all text-sm">
+              class="flex gap-1 items-center justify-start text-white fill-white hover:text-gray-200 hover:fill-gray-200 hover:scale-105 active:text-gray-400 active:fill-gray-400 active:scale-110 transition-all text-sm">
               <svg
                 role="img"
                 class="w-4"
