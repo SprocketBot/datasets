@@ -21,10 +21,12 @@
             else if (next?.textContent) navigator.clipboard.writeText(next.textContent)
         }
     }
+
+    $: pagesUrl = window.pages_url ?? "."
 </script>
 
 <!-- Needed for tailwind styles to be properly applied -->
-<link href="./assets/dist/style.css" rel="stylesheet"/>
+<link href="{pagesUrl}/assets/dist/style.css" rel="stylesheet"/>
 
 <button on:click={onClick} class="bg-transparent border-0 text-success-200 hover:text-success-400 active:text-success-500 hover:scale-105 active:scale-110 transform font-sans absolute top-2 right-2">
     <Icon src={Clipboard} class="w-4"/>
