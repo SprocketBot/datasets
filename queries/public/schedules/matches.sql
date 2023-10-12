@@ -24,4 +24,4 @@ FROM sprocket.schedule_fixture sf
          INNER JOIN sprocket.game_mode gm on m."gameModeId" = gm.id
          LEFT JOIN sprocket.round r ON m.id = r."matchId"
 GROUP BY m.id, home.id, away.id, gsgp.id, sg.start, sg.end, sf.id, gm.id, gsg.ordinal
-ORDER BY sg.start, sg.end, sf.id, gm.id, gsg.ordinal;
+ORDER BY sg.start, sg.end, sf.id, gm.id, gsg.ordinal
