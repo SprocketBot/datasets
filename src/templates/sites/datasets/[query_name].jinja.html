@@ -1,7 +1,7 @@
 {% from "table_macro.jinja.html" import list_table %} {% extends
 "layout.jinja.html" %} {% block main %}
 
-<h2 class="text-2xl font-bolder text-primary mb-2">{{ dataset_name }}</h2>
+<h2 class="text-2xl font-bolder text-primary mb-2 capitalize">{{ dataset_name|replace("_", " ") }}</h2>
 
 <section>
   <h3 class="uppercase text-sm font-bold text-gray-400">About:</h3>
