@@ -5,7 +5,7 @@
     <section>
         <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The What:</h3>
         <p class="my-2">
-            This website documents the datasets that are provided by the
+            This page gives you information on the datasets that are available through the
             <a
                     class="font-medium underline hover:no-underline inline-block"
                     href="https://github.com/Sprocketbot"
@@ -13,33 +13,32 @@
                 Sprocket
             </a>
             platform.
-            They are all provided in the
+            Our datasets are mainly in the
             <a
                     class="italic font-medium underline hover:no-underline inline-block"
                     href="https://parquet.apache.org/"
                     target="_blank">
                 parquet
             </a>
-            format; which acts similarly to a CSV, but is much smaller.
+            format which is compact and efficient, similar to the simpler CSV format but taking up much less space.
         </p>
         <p>
-            Parquet is also frequently used with
+            Since the parquet format is not as commonly used as CSV or JSON, we also recommend a tool called
             <a
                     class="italic font-medium underline hover:no-underline inline-block"
                     href="https://duckdb.org"
                     target="_blank">
                 DuckDB
             </a>
-            for a quick way to start working with the data.
-            DuckDB supports loading
-            parquet files without downloading them, so most examples here will assume
-            that you are using it.
+            to work with these datasets easily.
+            DuckDB lets you work with the datasets without downloading them,
+            thus making it faster and efficient.
+            <i>Most examples here assume you're using DuckDB.</i>
         </p>
 
         <p>
-            Alternatively; <span class="font-mono">csv</span> and <span class="font-mono">json</span> formats are also
-            available
-            for usage with Google Sheets, or directly on a website.
+            If you're more comfortable with common formats, we also provide these datasets in CSV and JSON formats.
+            These can be used directly on Google Sheets, or on other websites / tools you use or build.
         </p>
     </section>
 
