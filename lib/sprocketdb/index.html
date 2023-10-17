@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+    </head>
+    <body>
+        Hello
+        <script>
+            window.spr = {}
+            window.spr.manifest_url = "https://f004.backblazeb2.com/file/sprocket-artifacts/test/pages/assets/manifest.json"
+        </script>
+        <!-- Load the Javascript bundle -->
+        <script type="module" async src="https://f004.backblazeb2.com/file/sprocket-artifacts/test/pages/assets/sprdb/sprdb.js" defer id="spr_script"></script>
+        <!-- Use the library -->
+        <script>
+            // Wait for the script to actually load
+            spr_script.addEventListener("load", async () => {
+                // Wait for the database to initialize itself, this may take a couple seconds
+                await spr.ready
+
+                // Log that it is ready; and run a simple query
+                console.log("SprocketDB Ready")
+                console.log(await spr.query("SELECT 1"))
+            })
+        </script>
+    </body>
+</html>

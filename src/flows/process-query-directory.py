@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 import pytz
 import s3fs
@@ -97,6 +98,26 @@ async def process_query_directory(
 
     if build_pages:
         data_files = fs.glob(flow_path_manager.parquet_glob())
+
+        pathless_files = [flow_path_manager.remove_prefixes(p) for p in data_files]
+        manifest = {}
+        for pathless_file in pathless_files:
+            parts = pathless_file.split("/")
+            filename = ".".join(parts[-1].split(".")[:-1])
+            t = manifest
+            for part in parts[:-1]:
+                if not part in t:
+                    t[part] = {}
+                t = t[part]
+            t[filename] = flow_path_manager.parquet_path(pathless_file, "http")
+        
+        
+        print(manifest)
+        with open(os.path.join(assets_path, "manifest.json"), "w") as f:
+            f.write(json.dumps(manifest))
+                
+
+
         nav_elements = [
             {
                 "href": flow_path_manager.get_page_url_from_parquet(datum),
@@ -182,4 +203,4 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str, wait_f
 
 
 if __name__ == '__main__':
-    asyncio.run(process_query_directory(subdir="test"))
+    asyncio.run(process_query_directory(subdir="test", build_pages=True, refresh_parquet=False, create_archive=False))

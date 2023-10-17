@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-bolder text-primary mb-2">Sprocket Data Sets</h2>
 
     <section>
-        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The What:</h3>
+        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">What is this?</h3>
         <p class="my-2">
             This page gives you information on the datasets that are available through the
             <a
@@ -42,8 +42,10 @@
         </p>
     </section>
 
+    <hr class="mx-8 my-2"/>
+
     <section class="">
-        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">The How:</h3>
+        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">Exploring this data:</h3>
 
         <p class="mb-2">
             This is not an exhaustive list of tools that are compatible with the parquet
@@ -163,6 +165,45 @@
                 </ul>
             </section>
         </div>
+    </section>
+
+    <hr class="mx-8 my-2"/>
+
+    <section class="">
+        <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">Using this data in a javascript project:</h3>
+
+        <p class="mb-2">
+            The Sprocket team also exposes a ready-to-use Javascript bundle that you can use on your webpage.
+            Use the example below to load it on your page and run a simple query.
+        </p>
+
+
+        <h4 class="uppercase text-xs font-bold text-gray-400 mb-2">Usage:</h4>
+        
+        <pre class="relative text-xs"><code lang="html"
+            >&lt;!-- Load the Javascript bundle --&gt;
+&lt;script type=&quot;module&quot; async src=&quot;https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/sprdb/sprdb.js&quot; defer id=&quot;spr_script&quot;&gt;&lt;/script&gt;
+&lt;!-- Use the library --&gt;
+&lt;script&gt;
+// Wait for the script to actually load
+spr_script.addEventListener(&quot;load&quot;, async () =&gt; {
+    // Wait for the database to initialize itself, this may take a couple seconds
+    await spr.ready
+
+    // Log that it is ready; and run a simple query
+    console.log(&quot;SprocketDB Ready&quot;)
+    console.log(await spr.query(&quot;SELECT 1&quot;))
+})
+&lt;/script&gt;</code><spr-copy-button></spr-copy-button></pre>
+
+    <h4 class="uppercase text-xs font-bold text-gray-400 mb-2">Reference:</h4>
+    <pre class="relative text-xs"><code lang="typescript"
+        >type Query = (query_string: string) =&gt; Promise&lt;Record&lt;string, string | number | boolean&gt;[]&gt;
+type Schema = Record&lt;string,Record&lt;string,string&gt;&gt;
+
+type spr = { query: Query, schema: Schema, ready: Promise&lt;void&gt; }
+
+window.spr = spr</code></pre>
     </section>
 
 {% endblock %}

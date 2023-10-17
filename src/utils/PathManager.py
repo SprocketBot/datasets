@@ -22,6 +22,14 @@ class PathManager:
     def data_path(self):
         return f"{self.namespace}/{data_prefix}"
 
+    def parquet_path(self, path: str, path_type: str = "s3"):
+        if path_type == "s3":
+            return f"{self.namespace}/{data_prefix}/{path}"
+        elif path_type == "http":
+            return f"{self.public_url_root}/{self.namespace}/{data_prefix}/{path}"
+        else:
+            raise Exception(f"Must provide expected type of path '{path_type}' is not valid.")
+
     def pages_path(self, path_type: str = "s3"):
         if path_type == "s3":
             return f"{self.namespace}/{pages_prefix}"
