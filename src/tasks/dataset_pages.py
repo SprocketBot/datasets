@@ -1,5 +1,6 @@
 import os
 import tempfile
+from datetime import datetime, UTC
 
 import duckdb
 import frontmatter
@@ -86,7 +87,8 @@ async def build_dataset_page(
             "sample": {"data": sample.fetchall(), "cols": sample.columns},
             "summary": {"data": summary.fetchall(), "cols": summary.columns},
         },
-        pages_url=pages_url
+        pages_url=pages_url,
+        now=datetime.now(UTC)
     )
 
     set_path = "/".join([*bucket_prefix.split("/"), *set_subpath.split("/")])
@@ -105,7 +107,8 @@ async def build_index_page(nav_elements: list[dict], path_manager: PathManager):
     s3_fs: RemoteFileSystem = await RemoteFileSystem.load("s3")
     index_page_template = env.get_template("index.jinja.html")
     page_content = index_page_template.render(
-        pages_url=path_manager.pages_path("http"), nav_elements=nav_elements
+        pages_url=path_manager.pages_path("http"), nav_elements=nav_elements,
+        now=datetime.now(UTC)
     )
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -142,6 +145,7 @@ async def build_archive_page(nav_elements: list[dict], path_manager: PathManager
         pages_url=path_manager.pages_path("http"),
         nav_elements=nav_elements,
         archives=archive_items,
+        now=datetime.now(UTC)
     )
     with tempfile.TemporaryDirectory() as tmp_dir:
         with open(os.path.join(tmp_dir, "archive.html"), "w") as f:
