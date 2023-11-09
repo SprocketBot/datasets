@@ -1,21 +1,19 @@
-from datetime import datetime
 import json
 
-import pytz
 import s3fs
-from prefect import flow, task
+from prefect import flow
 from prefect.blocks.notifications import DiscordWebhook
 from prefect.filesystems import RemoteFileSystem
 from prefect.futures import resolve_futures_to_data
 from prefect_dask import DaskTaskRunner
 
-###
-# Add directory to python path to simplify life
-###
 import asyncio
 import os
 import sys
 
+###
+# Add directory to the python path to simplify life
+###
 sys.path.append(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
@@ -39,7 +37,8 @@ from utils.walk_dir import walk_dir_async
     name="Publish Data",
     flow_run_name="{subdir} queries",
     task_runner=DaskTaskRunner(),
-    description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a documentation site based on the provided markdown with examples",
+    description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a " +
+                "documentation site based on the provided markdown with examples",
 )
 async def process_query_directory(
         subdir='public',
@@ -106,17 +105,14 @@ async def process_query_directory(
             filename = ".".join(parts[-1].split(".")[:-1])
             t = manifest
             for part in parts[:-1]:
-                if not part in t:
+                if part not in t:
                     t[part] = {}
                 t = t[part]
             t[filename] = flow_path_manager.parquet_path(pathless_file, "http")
-        
-        
+
         print(manifest)
         with open(os.path.join(assets_path, "manifest.json"), "w") as f:
             f.write(json.dumps(manifest))
-                
-
 
         nav_elements = [
             {
