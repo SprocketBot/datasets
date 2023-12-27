@@ -31,7 +31,7 @@ from utils.walk_dir import walk_dir_async
     log_prints=True,
     name="Publish Data",
     flow_run_name="{subdir} queries",
-    task_runner=DaskTaskRunner(cluster_kwargs={"memory_limit": "0.95"}),
+    task_runner=DaskTaskRunner(cluster_kwargs={"memory_limit": 0}),
     description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a "
     + "documentation site based on the provided markdown with examples",
 )
