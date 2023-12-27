@@ -8,6 +8,14 @@ SELECT ROUND((stats -> 'dpi'                                               )::nu
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists'      )::numeric, 2) as assists,
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric, 2) as goals_against,
        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against')::numeric, 2) as shots_against,
-       p."memberId"                                                  as member_id
-FROM sprocket.player_stat_line
-         INNER JOIN player p on player_stat_line."playerId" = p.id
+       p."memberId"                                                     as member_id,
+       r.id                                                             as round_id,
+       r."matchId"                                                      as match_id,
+       gm.code                                                        as gamemode,
+       gsgp.description                                                        as skill_group
+FROM sprocket.player_stat_line psl
+         INNER JOIN player p on psl."playerId" = p.id
+         INNER JOIN round r on psl."roundId" = r.id
+         INNER JOIN match m on r."matchId" = m.id
+         INNER JOIN game_mode gm ON m."gameModeId" = gm.id
+         INNER JOIN game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
