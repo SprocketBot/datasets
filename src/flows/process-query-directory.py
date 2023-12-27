@@ -14,12 +14,7 @@ import sys
 ###
 # Add directory to the python path to simplify life
 ###
-sys.path.append(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        ".."
-    )
-)
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
 
 from tasks.sync_s3_dir import sync_s3_dir
 from tasks.dataset_pages import build_index_page, build_dataset_page, build_archive_page
@@ -36,16 +31,16 @@ from utils.walk_dir import walk_dir_async
     log_prints=True,
     name="Publish Data",
     flow_run_name="{subdir} queries",
-    task_runner=DaskTaskRunner(),
-    description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a " +
-                "documentation site based on the provided markdown with examples",
+    task_runner=DaskTaskRunner(cluster_kwargs={"memory_limit": "0.95"}),
+    description="Executes all queries in {subdir}, publishes them to S3 compatible storage, and constructs a "
+    + "documentation site based on the provided markdown with examples",
 )
 async def process_query_directory(
-        subdir='public',
-        public_url_root='https://f004.backblazeb2.com/file/sprocket-artifacts',
-        refresh_parquet=True,
-        create_archive=True,
-        build_pages=True
+    subdir="public",
+    public_url_root="https://f004.backblazeb2.com/file/sprocket-artifacts",
+    refresh_parquet=True,
+    create_archive=True,
+    build_pages=True,
 ):
     # this is needed for bucket pathing information.
     # this was originally built with B2, which uses path-style S3 instead of subdomains
@@ -60,7 +55,9 @@ async def process_query_directory(
     # Get paths for this subdir
     ###
     bucket_name = extract_bucket_name(s3_fs.basepath)
-    flow_path_manager = PathManager(public_url_root=public_url_root, bucket_name=bucket_name, namespace=subdir)
+    flow_path_manager = PathManager(
+        public_url_root=public_url_root, bucket_name=bucket_name, namespace=subdir
+    )
     query_path = os.path.join(root_query_path, subdir)
 
     data_futures = []
@@ -74,7 +71,11 @@ async def process_query_directory(
         # Execute all queries
         ###
         data_futures = await walk_dir_async(
-            query_path, handle_query, ns=subdir, data_path=flow_path_manager.data_path(), wait_for=[delete_future]
+            query_path,
+            handle_query,
+            ns=subdir,
+            data_path=flow_path_manager.data_path(),
+            wait_for=[delete_future],
         )
 
     archive_future = None
@@ -85,10 +86,8 @@ async def process_query_directory(
         archive_paths = flow_path_manager.get_archives_paths()
         archive_future = await archive_s3_glob.submit(
             flow_path_manager.parquet_glob(),
-            [
-                archive_paths["current"],
-                archive_paths["dated"]
-            ], wait_for=data_futures
+            [archive_paths["current"], archive_paths["dated"]],
+            wait_for=data_futures,
         )
 
     ###
@@ -118,7 +117,9 @@ async def process_query_directory(
             {
                 "href": flow_path_manager.get_page_url_from_parquet(datum),
                 "title": ".".join(datum.split("/")[-1].split(".")[:-1]),
-                "prefix": " ".join(flow_path_manager.remove_prefixes(datum).split("/")[:-1])
+                "prefix": " ".join(
+                    flow_path_manager.remove_prefixes(datum).split("/")[:-1]
+                ),
             }
             for datum in data_files
         ]
@@ -126,26 +127,30 @@ async def process_query_directory(
         index_future = await build_index_page.submit(
             nav_elements=nav_elements,
             path_manager=flow_path_manager,
-            wait_for=data_futures
+            wait_for=data_futures,
         )
 
         data_page_futures = [
             await build_dataset_page.submit(
                 parquet_bucket_path=data_file,
-                csv_bucket_path=flow_path_manager.change_file_extension(data_file, "csv"),
-                json_bucket_path=flow_path_manager.change_file_extension(data_file, "json"),
+                csv_bucket_path=flow_path_manager.change_file_extension(
+                    data_file, "csv"
+                ),
+                json_bucket_path=flow_path_manager.change_file_extension(
+                    data_file, "json"
+                ),
                 docs_path=os.path.join(
                     query_path,
                     flow_path_manager.change_file_extension(
-                        flow_path_manager.remove_prefixes(data_file),
-                        "md")
+                        flow_path_manager.remove_prefixes(data_file), "md"
+                    ),
                 ),
                 nav_elements=nav_elements,
                 bucket_prefix=flow_path_manager.pages_path("s3"),
                 base_url=flow_path_manager.public_url_root,
                 pages_url=flow_path_manager.pages_path("http"),
                 path_manager=flow_path_manager,
-                wait_for=data_futures
+                wait_for=data_futures,
             )
             for data_file in data_files
         ]
@@ -153,13 +158,13 @@ async def process_query_directory(
         archive_future = await build_archive_page.submit(
             nav_elements=nav_elements,
             path_manager=flow_path_manager,
-            wait_for=archive_future
+            wait_for=archive_future,
         )
 
         assets_future = await sync_s3_dir.submit(
             bucket_name=flow_path_manager.bucket_name,
             bucket_path=flow_path_manager.page_path("assets", "s3"),
-            local_path=assets_path
+            local_path=assets_path,
         )
 
         page_futures = [assets_future, index_future, archive_future] + data_page_futures
@@ -187,16 +192,16 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str, wait_f
         # Then attempt to remove the namespace
         relative_path = root.split(ns)[-1].strip("/")
 
-        slugs = [
-            data_path,
-            relative_path,
-            filename.replace(".sql", "").strip("/")
-        ]
+        slugs = [data_path, relative_path, filename.replace(".sql", "").strip("/")]
         s3_path = "/" + "/".join(
             [slug for slug in slugs if slug is not None and slug != ""]
         )
         return execute_and_upload_pg.submit(f.read(), s3_path, s3_fs, wait_for=wait_for)
 
 
-if __name__ == '__main__':
-    asyncio.run(process_query_directory(subdir="test", build_pages=True, refresh_parquet=False, create_archive=False))
+if __name__ == "__main__":
+    asyncio.run(
+        process_query_directory(
+            subdir="test", build_pages=True, refresh_parquet=False, create_archive=False
+        )
+    )
