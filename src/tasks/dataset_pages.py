@@ -57,7 +57,7 @@ async def build_dataset_page(
                 docs = markdown2.markdown(raw_docstr)
     else:
         fm = {}
-        docs = None
+        docs = ""
 
     query_page_template = env.get_template("[query_name].jinja.html")
 

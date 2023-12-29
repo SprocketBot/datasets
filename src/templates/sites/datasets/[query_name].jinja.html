@@ -1,11 +1,16 @@
 {% from "table_macro.jinja.html" import list_table %} {% extends
 "layout.jinja.html" %} {% block main %}
 
-<h2 class="text-2xl font-bolder text-primary mb-2 capitalize">{{ dataset_name|replace("_", " ") }}</h2>
+<h2 class="text-2xl font-bolder text-primary mb-2 capitalize">
+  {{ dataset_name|replace("_", " ") }}
+</h2>
 
 <section>
   <h3 class="uppercase text-sm font-bold text-gray-400">About:</h3>
-  <div class="prose">{{ docs|safe|default("No description has been provided for this set", true) }}</div>
+  <div class="prose">
+    {{ docs|safe|default("No description has been provided for this set", true)
+    }}
+  </div>
 </section>
 
 <section>
@@ -29,7 +34,7 @@
     )
 );</code><spr-copy-button></spr-copy-button></pre>
     </dd>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">
       Select Everything
     </dt>
     <dd>
@@ -38,7 +43,7 @@
     </dd>
 
     {% if frontmatter.examples %} {% for example in frontmatter.examples %}
-    <dt class="font-semibold text-xs font-gray-300 uppercase">
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">
       {{ example.title }}
     </dt>
     <dd>
@@ -52,25 +57,28 @@
 
 <section class="flex flex-col gap-2">
   <h3 class="uppercase text-sm font-bold text-gray-400">CSV Usage</h3>
-    <h4 class="text-xs font-gray-300">To link a CSV to your Google sheet</h4>
-  <pre class="text-xs relative"><code lang="sql">=importData("{{ csv_url }}")</code><spr-copy-button></spr-copy-button></pre>
+  <h4 class="text-xs font-gray-300">To link a CSV to your Google sheet</h4>
+  <pre
+    class="text-xs relative"><code lang="sql">=importData("{{ csv_url }}")</code><spr-copy-button></spr-copy-button></pre>
 </section>
 
 <section class="flex flex-col gap-2">
   <h3 class="uppercase text-sm font-bold text-gray-400">JSON Usage</h3>
   <dl>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">Javascript</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">
+      Javascript
+    </dt>
     <dd>
       <pre
         class="text-xs relative"><code lang="js">const {{ dataset_name }} = await fetch("{{ json_url }}").then(r => r.json())</code><spr-copy-button></spr-copy-button></pre>
     </dd>
 
-    <dt class="font-semibold text-xs font-gray-300 uppercase">Python</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">Python</dt>
     <dd>
       <pre class="text-xs relative"><code lang="py">import requests
 {{ dataset_name }} = requests.get("{{ json_url }}").json()</code><spr-copy-button></spr-copy-button></pre>
     </dd>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">C#</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">C#</dt>
     <dd>
       <pre
         class="text-xs relative"><code lang="csharp">using (var client = new HttpClient())
@@ -80,7 +88,7 @@
 }
 </code><spr-copy-button></spr-copy-button></pre>
     </dd>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">Ruby</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">Ruby</dt>
     <dd>
       <pre class="text-xs relative"><code lang="ruby">require 'net/http'
 require 'json'
@@ -88,12 +96,12 @@ uri = URI.parse("{{ json_url }}")
 response = Net::HTTP.get_response(uri)
 {{ dataset_name }} = JSON.parse(response.body)</code><spr-copy-button></spr-copy-button></pre>
     </dd>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">R</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">R</dt>
     <dd>
       <pre class="text-xs relative"><code lang="r">library(jsonlite)
 {{ dataset_name }} <- fromJSON("{{ json_url }}")</code><spr-copy-button></spr-copy-button></pre>
     </dd>
-    <dt class="font-semibold text-xs font-gray-300 uppercase">curl</dt>
+    <dt class="font-semibold mt-2 text-xs font-gray-300 uppercase">curl</dt>
     <dd>
       <pre class="text-xs relative"><code lang="bash"
 >curl {{ json_url }} | jq</code><spr-copy-button></spr-copy-button></pre>
@@ -121,61 +129,59 @@ response = Net::HTTP.get_response(uri)
 
 <section class="flex flex-col gap-2">
   <h3 class="uppercase text-sm font-bold text-gray-400">Downloads</h3>
-
-  <a
-    class="flex gap-2 mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
-    href="{{ parquet_url }}">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-5 h-5">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
-    </svg>
-
-    Download as <span class="font-mono">parquet</span>
-  </a>
-  <a
-    class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
-    href="{{ csv_url }}">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-5 h-5">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
-    </svg>
-
-    Download as <span class="font-mono">csv</span>
-  </a>
-  <a
-    class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
-    href="{{ json_url }}">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-5 h-5">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
-    </svg>
-
-    Download as <span class="font-mono">json</span>
-  </a>
+  <div class="flex gap-4">
+    <a
+      class="flex gap-2 justify-center flex-1 mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
+      href="{{ parquet_url }}">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+      </svg>
+      <p>Download as <span class="font-mono">parquet</span></p>
+    </a>
+    <a
+      class="flex gap-2 justify-center flex-1 mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
+      href="{{ csv_url }}">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+      </svg>
+      <p>Download as <span class="font-mono">csv</span></p>
+    </a>
+    <a
+      class="flex gap-2 justify-center flex-1 mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4 bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800"
+      href="{{ json_url }}">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+      </svg>
+      <p>Download as <span class="font-mono">json</span></p>
+    </a>
+  </div>
 </section>
 
 {% endblock %}
