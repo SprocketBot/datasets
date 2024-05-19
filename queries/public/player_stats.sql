@@ -17,9 +17,5 @@ FROM sprocket.player_stat_line psl
          INNER JOIN player p on psl."playerId" = p.id
          INNER JOIN round r on psl."roundId" = r.id
          INNER JOIN match m on r."matchId" = m.id
-         INNER JOIN match_parent mp ON mp.id = m."matchParentId"
-         INNER JOIN schedule_fixture sf ON mp."fixtureId" = sf.id
-         INNER JOIN schedule_group sg ON sf."scheduleGroupId" = sg.id
          INNER JOIN game_mode gm ON m."gameModeId" = gm.id
          INNER JOIN game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
-WHERE sg."parentGroupId" = 219
