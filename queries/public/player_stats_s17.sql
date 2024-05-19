@@ -19,3 +19,4 @@ FROM sprocket.player_stat_line psl
          INNER JOIN match m on r."matchId" = m.id
          INNER JOIN game_mode gm ON m."gameModeId" = gm.id
          INNER JOIN game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
+WHERE m.season = 17
