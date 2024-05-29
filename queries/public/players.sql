@@ -8,7 +8,7 @@ SELECT
     mle_p.role as slot,
     mle_p.mleid as mle_id,
     mle_p.id as mle_player_id,
-    mle_p.discord_id as discord_id,
+    mle_p.discord_id as discord_id
 FROM
     sprocket.player p
     INNER JOIN sprocket.member sm ON sm.id = p."memberId"
