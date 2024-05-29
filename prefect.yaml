@@ -16,7 +16,7 @@ push:
 pull:
 - prefect.deployments.steps.git_clone:
     id: clone-step
-    repository: https://github.com/sprocketbot/data
+    repository: https://github.com/sprocketbot/datasets
     branch: main
     access_token: '{{ $GITHUB_PAT }}'
 - prefect.deployments.steps.pip_install_requirements:
