@@ -28,11 +28,3 @@ FROM
 WHERE ntwp.points >= 30
 AND ntwp.team_name = 'Pend'
 
-
-
-
-    -- SELECT ed.scrim_points as points, ed.player_id, ed.updated_at FROM mledb.eligibility_data ed
-    -- WHERE ed.updated_at > NOW() - INTERVAL '30 days'
-    -- AND ed.player_id = 7939
-
-
