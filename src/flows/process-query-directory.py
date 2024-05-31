@@ -203,6 +203,6 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str, wait_f
 if __name__ == "__main__":
     asyncio.run(
         process_query_directory(
-            subdir="test", build_pages=True, refresh_parquet=True, create_archive=False
+            subdir="test", build_pages=True, refresh_parquet=False, create_archive=False
         )
     )
