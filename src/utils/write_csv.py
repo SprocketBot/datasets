@@ -24,7 +24,13 @@ def write_csv(data: list[dict], outpath: Optional[str] = None) -> (str, Callable
     output_lines.append(",".join([field.name for field in table.schema]))
 
     for row in table.to_pylist():
-        output_lines.append(",".join([str(row[field.name]) for field in table.schema]))
+        lis = []
+        for field in table.schema:
+            if field.type == pyarrow.string():
+                lis.append(f'"{row[field.name]}"') # passes vibe check
+            else:
+                lis.append(str(row[field.name]))
+        output_lines.append(",".join(lis))
 
     with open(outpath, "w") as f:
         f.write("\n".join(output_lines))
