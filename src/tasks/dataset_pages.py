@@ -1,6 +1,6 @@
 import os
 import tempfile
-from datetime import datetime, UTC
+from datetime import datetime
 
 import duckdb
 import frontmatter
@@ -88,7 +88,7 @@ async def build_dataset_page(
             "summary": {"data": summary.fetchall(), "cols": summary.columns},
         },
         pages_url=pages_url,
-        now=datetime.now(UTC)
+        now=datetime.utcnow()
     )
 
     set_path = "/".join([*bucket_prefix.split("/"), *set_subpath.split("/")])
@@ -108,7 +108,7 @@ async def build_index_page(nav_elements: list[dict], path_manager: PathManager):
     index_page_template = env.get_template("index.jinja.html")
     page_content = index_page_template.render(
         pages_url=path_manager.pages_path("http"), nav_elements=nav_elements,
-        now=datetime.now(UTC)
+        now=datetime.utcnow()
     )
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -145,7 +145,7 @@ async def build_archive_page(nav_elements: list[dict], path_manager: PathManager
         pages_url=path_manager.pages_path("http"),
         nav_elements=nav_elements,
         archives=archive_items,
-        now=datetime.now(UTC)
+        now=datetime.utcnow()
     )
     with tempfile.TemporaryDirectory() as tmp_dir:
         with open(os.path.join(tmp_dir, "archive.html"), "w") as f:
