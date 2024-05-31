@@ -170,14 +170,15 @@ async def process_query_directory(
         page_futures = [assets_future, index_future, archive_future] + data_page_futures
         await resolve_futures_to_data(page_futures)
 
-    discord_notify = await DiscordWebhook.load("frog-of-knowledge-alerts")
     notify_string = f"""
     🔄| Public Datasets Updated |🔄.
     💾| Archive Point Created |💾.
     📙| Updated the [Book]({flow_path_manager.pages_path("http")}/index.html) |📙.
     """
     if subdir != "test":
+        discord_notify = await DiscordWebhook.load("frog-of-knowledge-alerts")
         await discord_notify.notify(notify_string)
+
     print(notify_string)
 
 
@@ -202,6 +203,6 @@ async def handle_query(root: str, filename: str, ns: str, data_path: str, wait_f
 if __name__ == "__main__":
     asyncio.run(
         process_query_directory(
-            subdir="test", build_pages=True, refresh_parquet=False, create_archive=False
+            subdir="test", build_pages=True, refresh_parquet=True, create_archive=False
         )
     )
