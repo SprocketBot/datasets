@@ -1,4 +1,4 @@
-SELECT INITCAP(d.conference),
+SELECT INITCAP(d.conference) as conference,
        t.division_name,
        t.name,
        t.callsign,
