@@ -64,7 +64,7 @@ WITH mle_team_meta AS (SELECT team.name, division_name, conference
      unranked AS (SELECT mtm.name,
                          mtm.division_name,
                          mtm.conference,
-                         SUM(CASE WHEN mtm.name = rsd.home THEN rsd.homeWins ELSE rsd.awayWins END) as team_wins,
+                         SUM(CASE WHEN mtm.name = rsd.home THEN rsd.homeWins ELSE rsd.awayWins END)  as team_wins,
                          SUM(CASE WHEN mtm.name != rsd.home THEN rsd.homeWins ELSE rsd.awayWins END) as team_losses,
                          rsd.league,
                          rsd.mode,
@@ -73,7 +73,13 @@ WITH mle_team_meta AS (SELECT team.name, division_name, conference
                            INNER JOIN raw_standings_data rsd ON rsd.home = mtm.name OR rsd.away = mtm.name
                   GROUP BY mtm.name, rsd.season, CUBE (rsd.league, rsd.mode, mtm.division_name, mtm.conference)
                   ORDER BY season, division_name, conference, team_wins DESC),
-     ranked AS (SELECT ROW_NUMBER() OVER (PARTITION BY division_name, conference, league, mode, season ORDER BY team_wins DESC),
+     ranked AS (SELECT ROW_NUMBER() OVER (
+         PARTITION BY division_name, conference, league, mode, season
+         ORDER BY
+             CASE
+                 WHEN team_wins = 0 AND team_losses = 0 THEN -1
+                 ELSE team_wins / (team_wins + team_losses) END DESC
+         ) as ranking,
                        *
                 FROM unranked)
 SELECT *
