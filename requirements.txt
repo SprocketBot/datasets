@@ -21,7 +21,7 @@ cloudpickle==3.0.0
 colorama==0.4.6
 coolname==2.2.0
 croniter==1.4.1
-cryptography==41.0.4
+cryptography==41.0.6
 dask==2023.9.2
 dateparser==1.1.8
 distributed==2023.9.2
