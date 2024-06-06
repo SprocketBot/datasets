@@ -72,7 +72,7 @@ pandas==2.1.1
 partd==1.4.1
 pathspec==0.11.2
 pendulum==2.1.2
-prefect==2.14.3
+prefect==2.16.5
 prefect-dask==0.2.5
 psutil==5.9.5
 psycopg==3.1.10
