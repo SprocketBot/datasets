@@ -1,21 +1,22 @@
 select
-	ROUND((stats -> 'dpi' )::numeric, 2) as dpi,
-	ROUND((stats -> 'gpi' )::numeric, 2) as gpi,
-	ROUND((stats -> 'opi' )::numeric, 2) as opi,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals' )::numeric, 2) as goals,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'saves' )::numeric, 2) as saves,
+    ROUND((stats -> 'dpi' )::numeric, 2) as dpi,
+    ROUND((stats -> 'gpi' )::numeric, 2) as gpi,
+    ROUND((stats -> 'opi' )::numeric, 2) as opi,
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals' )::numeric, 2) as goals,
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'saves' )::numeric, 2) as saves,
     ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'score' )::numeric, 2) as score,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots' )::numeric, 2) as shots,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists' )::numeric, 2) as assists,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric, 2) as goals_against,
-	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against')::numeric, 2) as shots_against,
-	p."memberId" as member_id,
-	r.id as round_id,
-	r."matchId" as match_id,
-	gm.code as gamemode,
-	gsgp.description as skill_group,
-	sg.description as "Schedule Group/Week",
-	sg."start" as "Week start"
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots' )::numeric, 2) as shots,
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists' )::numeric, 2) as assists,
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric, 2) as goals_against,
+    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against')::numeric, 2) as shots_against,
+    p."memberId" as member_id,
+    r.id as round_id,
+    r."matchId" as match_id,
+    gm.code as gamemode,
+    gsgp.description as skill_group,
+    sg.id as "Schedule Group ID",
+    sg.description as "Schedule Group/Week",
+    sg."start" as "Week start"
 from
 	sprocket.player_stat_line psl
 inner join player p on

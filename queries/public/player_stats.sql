@@ -14,6 +14,7 @@ select
 	r."matchId" as match_id,
 	gm.code as gamemode,
 	gsgp.description as skill_group,
+	sg.id as "Schedule Group ID",
 	sg.description as "Schedule Group/Week",
 	sg."start" as "Week start"
 from
