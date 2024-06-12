@@ -4,7 +4,7 @@ select
 	ROUND((stats -> 'opi' )::numeric, 2) as opi,
 	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals' )::numeric, 2) as goals,
 	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'saves' )::numeric, 2) as saves,
-    ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'score' )::numeric, 2) as score,
+        ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'score' )::numeric, 2) as score,
 	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots' )::numeric, 2) as shots,
 	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists' )::numeric, 2) as assists,
 	ROUND((stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric, 2) as goals_against,
