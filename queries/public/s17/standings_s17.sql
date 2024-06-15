@@ -130,4 +130,4 @@ WHERE standing.conference = series_record.a
   AND standing.mode = series_record.h
 GROUP BY standing.conference, standing.team, standing.div, standing.record, standing.WinPercentage, standing.gd,
          series_record.f, series_record.d, standing.gd, standing.league, standing.mode
-ORDER BY standing.WinPercentage DESC, series_record.d DESC, standing.gd DESC;
+ORDER BY standing.WinPercentage DESC, series_record.d DESC, standing.gd DESC

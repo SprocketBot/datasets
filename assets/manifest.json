@@ -1,16 +1,1 @@
-{
-  "members": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/members.parquet",
-  "player_stats": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/player_stats.parquet",
-  "players": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/players.parquet",
-  "role_usages": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/role_usages.parquet",
-  "s17": {
-    "player_stats_s17": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/s17/player_stats_s17.parquet"
-  },
-  "schedules": {
-    "fixtures": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/fixtures.parquet",
-    "match_groups": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/match_groups.parquet",
-    "matches": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/matches.parquet"
-  },
-  "scrim_stats": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/scrim_stats.parquet",
-  "teams": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/teams.parquet"
-}
+{"members": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/members.parquet", "player_eligibility": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/player_eligibility.parquet", "player_stats": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/player_stats.parquet", "players": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/players.parquet", "role_usages": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/role_usages.parquet", "s17": {"player_stats_s17": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/s17/player_stats_s17.parquet", "standings_s17": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/s17/standings_s17.parquet"}, "schedules": {"fixtures": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/fixtures.parquet", "match_groups": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/match_groups.parquet", "matches": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/schedules/matches.parquet"}, "scrim_stats": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/scrim_stats.parquet", "team_standings": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/team_standings.parquet", "teams": "https://f004.backblazeb2.com/file/sprocket-artifacts/test/data/teams.parquet"}
