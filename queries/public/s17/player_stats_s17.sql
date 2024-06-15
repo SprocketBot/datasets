@@ -48,9 +48,8 @@ SELECT
   r.id as round_id,
   r."matchId" as match_id,
   gm.code as gamemode,
-  gsgp.description as skill_group
-    sg.description as "Schedule Group/Week",
-    sg."start" as "Week start"
+  gsgp.description as skill_group sg.description as "Schedule Group/Week",
+  sg."start" as "Week start"
 FROM
   sprocket.player_stat_line psl
   INNER JOIN player p on psl."playerId" = p.id
@@ -61,9 +60,7 @@ FROM
   INNER JOIN schedule_group sg ON sf."scheduleGroupId" = sg.id
   INNER JOIN game_mode gm ON m."gameModeId" = gm.id
   INNER JOIN game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
-inner join game_mode gm on
-	m."gameModeId" = gm.id
-inner join game_skill_group_profile gsgp on
-	m."skillGroupId" = gsgp."skillGroupId"
+  inner join game_mode gm on m."gameModeId" = gm.id
+  inner join game_skill_group_profile gsgp on m."skillGroupId" = gsgp."skillGroupId"
 WHERE
   sg."parentGroupId" = 219

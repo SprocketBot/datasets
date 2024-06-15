@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "prettier-format": "prettier queries/public/**/*.sql --write"
+  },
   "devDependencies": {
     "prettier": "3.3.2",
     "prettier-plugin-sql": "^0.18.0"
