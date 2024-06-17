@@ -5,3 +5,4 @@ env
 .env
 Sprocket DS.session.sql
 .idea
+node_modules/
