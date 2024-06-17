@@ -10,7 +10,7 @@ import * as ddb from "@duckdb/duckdb-wasm";
   let manifest_url: string =
     // @ts-ignore
     window.spr?.manifest_url ??
-    "https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/manifest.json"; // TODO: swap to public
+    "https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/manifest.json";
 
   let res: CallableFunction = () => {};
   // @ts-ignore

@@ -1,11 +1,12 @@
 {
   "name": "sprocketdb",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:node": "bun build --target node --external aws-sdk --external nock --external mock-aws-s3 src/node.ts --outfile dist/node.js",
+    "prepublish": "bun build --target node --external aws-sdk --external nock --external mock-aws-s3 src/node.ts --outfile dist/node.js",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -13,6 +14,20 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "^1.27.1-dev125.0"
+    "@duckdb/duckdb-wasm": "^1.27.1-dev125.0",
+    "duckdb": "^1.0.0",
+    "duckdb-async": "^1.0.0"
+  },
+  "files": [
+    "package.json",
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/node.js",
+      "require": null,
+      "browser": null
+    }
   }
 }

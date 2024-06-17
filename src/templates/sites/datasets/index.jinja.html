@@ -193,13 +193,15 @@
     <section class="">
         <h3 class="uppercase text-sm font-bold text-gray-400 mb-2">Using this data in a javascript project:</h3>
 
+
+        <section>
+        <h4 class="uppercase text-xs font-bold text-gray-400 mb-2">Browser Usage:</h4>
         <p class="mb-2">
             The Sprocket team also exposes a ready-to-use Javascript bundle that you can use on your webpage.
             Use the example below to load it on your page and run a simple query.
         </p>
 
 
-        <h4 class="uppercase text-xs font-bold text-gray-400 mb-2">Usage:</h4>
         
         <pre class="relative text-xs"><code lang="html"
             >&lt;!-- Load the Javascript bundle --&gt;
@@ -225,6 +227,31 @@ type Schema = Record&lt;string,Record&lt;string,string&gt;&gt;
 type spr = { query: Query, schema: Schema, ready: Promise&lt;void&gt; }
 
 window.spr = spr</code></pre>
+        </section>
+
+        <section>
+        <h4 class="uppercase text-xs font-bold text-gray-400 mb-2">NodeJS Usage:</h4>
+        <p class="mb-2">
+            For serverside usage; the Sprocket team has created the 
+            <a href="https://npmjs.com/package/sprocketdb" target="_blank">sprocketdb</a>
+            package. You can install and use this package to easily query the datasets.
+        </p>
+
+        <pre class="relative text-xs"><code lang="javascript"
+        >import {sprocketDb} from "sprocketdb";
+
+const main = async () => {
+  const query = await sprocketDb(); // factory function to setup the database
+
+  const aPlayer = await query("SELECT * FROM players LIMIT 1");
+
+  console.log(
+    aPlayer[0];
+  )
+}
+
+main()</pre>
+
     </section>
 
 {% endblock %}
