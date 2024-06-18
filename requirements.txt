@@ -117,7 +117,7 @@ typing_extensions==4.8.0
 tzdata==2023.3
 tzlocal==5.0.1
 ujson==5.8.0
-urllib3==1.26.16
+urllib3==1.26.19
 uvicorn==0.23.2
 websocket-client==1.6.3
 websockets==11.0.3
