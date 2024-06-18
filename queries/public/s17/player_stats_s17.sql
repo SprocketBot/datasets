@@ -49,7 +49,7 @@ SELECT
   r."matchId" as match_id,
   gm.code as gamemode,
   gsgp.description as skill_group,
-  tsl.team_name as team_name
+  tsl."teamName" as team_name
 FROM
   sprocket.player_stat_line psl
   INNER JOIN player p on psl."playerId" = p.id
