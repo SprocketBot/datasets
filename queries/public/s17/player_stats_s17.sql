@@ -47,6 +47,7 @@ SELECT
   p."memberId" as member_id,
   r.id as round_id,
   r."matchId" as match_id,
+  r."homeWon" as home_won,
   gm.code as gamemode,
   gsgp.description as skill_group,
   tsl."teamName" as team_name
