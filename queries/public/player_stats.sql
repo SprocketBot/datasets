@@ -1,46 +1,46 @@
 SELECT
-  ROUND((stats -> 'dpi')::numeric, 2) as dpi,
-  ROUND((stats -> 'gpi')::numeric, 2) as gpi,
-  ROUND((stats -> 'opi')::numeric, 2) as opi,
+  ROUND((psl.stats -> 'dpi')::numeric, 2) as dpi,
+  ROUND((psl.stats -> 'gpi')::numeric, 2) as gpi,
+  ROUND((psl.stats -> 'opi')::numeric, 2) as opi,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals'
     )::numeric,
     2
   ) as goals,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'saves'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'saves'
     )::numeric,
     2
   ) as saves,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'score'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'score'
     )::numeric,
     2
   ) as score,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots'
     )::numeric,
     2
   ) as shots,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'assists'
     )::numeric,
     2
   ) as assists,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against'
     )::numeric,
     2
   ) as goals_against,
   ROUND(
     (
-      stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against'
+      psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against'
     )::numeric,
     2
   ) as shots_against,
@@ -53,9 +53,9 @@ SELECT
   tsl."teamName" as team_name
 FROM
   sprocket.player_stat_line psl
-  INNER JOIN player p on psl."playerId" = p.id
-  INNER JOIN round r on psl."roundId" = r.id
-  INNER JOIN match m on r."matchId" = m.id
-  INNER JOIN game_mode gm ON m."gameModeId" = gm.id
-  INNER JOIN game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
+  INNER JOIN sprocket.player p on psl."playerId" = p.id
+  INNER JOIN sprocket.round r on psl."roundId" = r.id
+  INNER JOIN sprocket.match m on r."matchId" = m.id
+  INNER JOIN sprocket.game_mode gm ON m."gameModeId" = gm.id
+  INNER JOIN sprocket.game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
   INNER JOIN sprocket.team_stat_line tsl ON psl."teamStatsId" = tsl.id
