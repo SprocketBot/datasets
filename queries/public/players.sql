@@ -6,7 +6,7 @@ WITH
     FROM
       mledb.eligibility_data ed
     WHERE
-      ed.updated_at > NOW() - INTERVAL '30 days'
+      ed.updated_at >= NOW() - INTERVAL '30 days'
     GROUP BY
       2
   ),
