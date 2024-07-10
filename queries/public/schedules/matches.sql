@@ -2,6 +2,8 @@ SELECT
   m.id as match_id,
   sf.id as fixture_id,
   sf."scheduleGroupId" as match_group_id,
+  sg.start AS scheduling_start_time,
+  sg.end AS scheduling_end_time,
   home.title as home,
   away.title as away,
   gsgp.description as league,

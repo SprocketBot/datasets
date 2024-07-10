@@ -1,4 +1,12 @@
 SELECT
+  p."memberId" as member_id,
+  tsl."teamName" as team_name,
+  gsgp.description as skill_group,
+  gm.code as gamemode,
+  r."matchId" as match_id,
+  r.id as round_id,
+  r."createdAt" AS replays_submitted_at,
+  r."homeWon" as home_won,
   ROUND((psl.stats -> 'dpi')::numeric, 2) as dpi,
   ROUND((psl.stats -> 'gpi')::numeric, 2) as gpi,
   ROUND((psl.stats -> 'opi')::numeric, 2) as opi,
@@ -43,14 +51,7 @@ SELECT
       psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against'
     )::numeric,
     2
-  ) as shots_against,
-  p."memberId" as member_id,
-  r.id as round_id,
-  r."matchId" as match_id,
-  r."homeWon" as home_won,
-  gm.code as gamemode,
-  gsgp.description as skill_group,
-  tsl."teamName" as team_name
+  ) as shots_against
 FROM
   sprocket.player_stat_line psl
   INNER JOIN sprocket.player p on psl."playerId" = p.id
@@ -67,3 +68,8 @@ FROM
 
 WHERE
   sg."parentGroupId" = 219
+
+ORDER BY
+  member_id,
+  replays_submitted_at,
+  round_id
