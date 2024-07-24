@@ -12,54 +12,21 @@ WITH
   ),
   raw_standings_data AS (
     SELECT
+      SUM(
       CASE
-        WHEN match_invalidation.id IS NOT NULL THEN
-        -- Match was Invalidated, assign 5 points to this field if the NCP was in favor of the home team
-        CASE
-          WHEN match_invalidation."favorsHomeTeam" THEN 5
-          ELSE 0
-        END
-        ELSE SUM(
-          CASE
-            WHEN r."homeWon" IS NOT NULL THEN CASE
-              WHEN round_invalidation IS NOT NULL THEN
-              -- Round was invalidated, assign 1 point to this field if the NCP was in favor of the home team
-              CASE
-                WHEN round_invalidation."favorsHomeTeam" THEN 1
-                ELSE 0
-              END
-              -- Add 1 to result if home won
-              ELSE CASE
-                WHEN r."homeWon" THEN 1
-                ELSE 0
-              END
-            END
-            ELSE 0
-          END
-        )
-      END as homeWins,
+           WHEN r."homeWon" THEN 1
+           ELSE 0
+      END
+      )
+      as homeWins,
       -- This case statement should mirror the above with THEN x ELSE y reversed to THEN y ELSE x
-      CASE
-        WHEN match_invalidation.id IS NOT NULL THEN CASE
-          WHEN match_invalidation."favorsHomeTeam" THEN 0
-          ELSE 5
-        END
-        ELSE SUM(
-          CASE
-            WHEN r."homeWon" IS NOT NULL THEN CASE
-              WHEN round_invalidation IS NOT NULL THEN CASE
-                WHEN round_invalidation."favorsHomeTeam" THEN 0
-                ELSE 1
-              END
-              ELSE CASE
+      SUM(
+              CASE
                 WHEN r."homeWon" THEN 0
                 ELSE 1
               END
-            END
-            ELSE 0
-          END
         )
-      END as awayWins,
+      as awayWins,
       sg.description as match,
       home.title as home,
       away.title as away,
@@ -80,7 +47,7 @@ WITH
         WHERE
           code = 'SEASON'
       )
-      LEFT JOIN sprocket.round r ON m.id = r."matchId"
+      INNER JOIN sprocket.round r ON m.id = r."matchId"
       INNER JOIN sprocket.franchise_profile home ON home."franchiseId" = sf."homeFranchiseId"
       INNER JOIN sprocket.franchise_profile away ON away."franchiseId" = sf."awayFranchiseId"
       INNER JOIN sprocket.game_skill_group_profile gsgp ON gsgp."skillGroupId" = m."skillGroupId"
