@@ -109,11 +109,11 @@ FROM sprocket.player_stat_line psl
     INNER JOIN sprocket.team_stat_line tsl 
         ON psl."teamStatsId" = tsl.id
     INNER JOIN sprocket."member"
-		ON p."memberId" = sprocket."member".id 
+		    ON p."memberId" = sprocket."member".id 
     INNER JOIN sprocket."user"
-		ON sprocket.member."userId" = sprocket.user.id 
+		    ON sprocket.member."userId" = sprocket.user.id 
     INNER JOIN sprocket.user_profile 
-		ON sprocket.user.id = sprocket.user_profile."userId"
+		    ON sprocket.user.id = sprocket.user_profile."userId"
     INNER JOIN sprocket.match_parent mp 
         ON mp.id = m."matchParentId"
     INNER JOIN sprocket.schedule_fixture sf 
@@ -121,7 +121,7 @@ FROM sprocket.player_stat_line psl
     INNER JOIN sprocket.schedule_group sg 
         ON sf."scheduleGroupId" = sg.id
     INNER JOIN sprocket.schedule_group sg2 
-    	ON sg."parentGroupId" = sg2.id
+    	  ON sg."parentGroupId" = sg2.id
 GROUP BY "displayName"
 ,salary
 ,member_id
