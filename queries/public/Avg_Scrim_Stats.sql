@@ -5,6 +5,11 @@ select
  gm.code as gamemode,
  gsgp.description as skill_group,
  count(sm.id) as scrim_games_played, 
+    sum (   case
+  	  when psl."isHome" = true and r."homeWon" = true then 1
+  	  when psl."isHome" = false and r."homeWon" = false then 1
+    	else 0
+    end )::float / count(sm.id) as win_percentage,
     avg(round((psl.stats -> 'dpi')::numeric, 2)) as dpi_per_game,
     avg(round((psl.stats -> 'gpi')::numeric, 2)) as Avg_Sprocket_Rating,
     avg(round((psl.stats -> 'opi')::numeric, 2)) as opi_per_game,
@@ -72,4 +77,4 @@ from sprocket.player_stat_line psl
     inner join sprocket.scrim_meta sm 
     	  on mp."scrimMetaId" = sm.id 
  where sm."createdAt" > current_date - interval '60 days'
- group by "displayName", salary, member_id, gamemode, skill_group
+ group by "displayName", salary, sprocket_player_id, gamemode, skill_group
