@@ -9,7 +9,7 @@ sm."createdAt" as scrim_date,
   	  when psl."isHome" = true and r."homeWon" = true then true
     	when psl."isHome" = false and r."homeWon" = false then true
   	  else false
-    end as did_win
+    end as did_win,
     (round((psl.stats -> 'dpi')::numeric, 2)) as dpi,
     (round((psl.stats -> 'gpi')::numeric, 2)) as sprocket_rating,
     (round((psl.stats -> 'opi')::numeric, 2)) as opi,
