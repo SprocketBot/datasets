@@ -10,13 +10,26 @@ WITH
     GROUP BY
       2
   ),
-captains_by_team as (
-select
-	player_id,
-	team_name
-from
-	mledb.team_to_captain ttc
-    )
+eligibility_date as (
+SELECT
+    ed."createdAt" + interval '30 days' as "Eligible Until",
+    sum_points as "Total Points",
+    ed."playerId"
+FROM (
+    SELECT
+        ed."createdAt",
+        ed.points,
+        ed."matchParentId",
+        ed."playerId",
+        SUM(ed.points) OVER (PARTITION BY ed."playerId" ORDER BY ed."createdAt" DESC) AS sum_points
+    FROM sprocket.eligibility_data ed
+    WHERE ED."createdAt" >= CURRENT_DATE - interval '30 days'
+    GROUP BY
+        1, 2, 3, 4
+    ORDER BY ed."createdAt" DESC
+    ) ED
+WHERE sum_points = 30
+ORDER BY ed."playerId", ed."createdAt" desc)
 SELECT
   mp.name,
   p.salary,
@@ -33,7 +46,11 @@ SELECT
 		else 'NA'
 	end as "Franchise Staff Position",
   mle_p.role as slot,
-  COALESCE(sp.points, 0) as current_scrim_points
+  COALESCE(sp.points, 0) as current_scrim_points,
+  case 
+    	when ed."Eligible Until" is null then 'Not Eligible'
+    	else to_char(ed."Eligible Until"::timestamp, 'DD Mon YYYY')
+    end as "Eligible Until"
 FROM
   sprocket.player p
   INNER JOIN sprocket.member sm ON sm.id = p."memberId"
@@ -45,3 +62,4 @@ FROM
   inner join mledb.team t on mle_p.team_name = t.name
   left join mledb.team_to_captain ttc on mle_p.id = ttc.player_id
   LEFT JOIN scrim_points sp ON sp.player_id = mle_p.id
+  left join eligibility_date ed on ed."playerId" = p.id
