@@ -52,6 +52,7 @@ SELECT
     )::numeric,
     2
   ) as shots_against
+
 FROM
   sprocket.player_stat_line psl
   INNER JOIN sprocket.player p on psl."playerId" = p.id
@@ -65,7 +66,7 @@ FROM
   INNER JOIN sprocket.schedule_group sg ON sf."scheduleGroupId" = sg.id
 
 WHERE
-  sg."parentGroupId" = 219
+  sg."parentGroupId" = 291
 
 ORDER BY
   member_id,
