@@ -51,7 +51,17 @@ SELECT
       psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against'
     )::numeric,
     2
-  ) as shots_against
+  ) as shots_against,
+  ROUND(
+      (
+      psl.stats -> 'otherStats' -> 'stats' -> 'demo' -> 'inflicted'
+    )::numeric, 2
+    ) AS demos_inflicted,
+  ROUND(
+      (
+      psl.stats -> 'otherStats' -> 'stats' -> 'demo' -> 'taken'
+    )::numeric, 2
+    ) AS demos_taken
 
 FROM
   sprocket.player_stat_line psl
