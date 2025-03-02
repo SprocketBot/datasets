@@ -1,36 +1,36 @@
 select
-	-- Get serie and game id
+    -- Get serie and game id
     m.id as match_id,
     r.id as round_id,
-    
+
     -- Get home team name
     fph.title as home,
-    
+
     -- Get home goals from team stats or 0 if NCP
     CASE
         WHEN r."invalidationId" IS NOT NULL OR
         m."invalidationId" IS NOT NULL OR
         tslh.stats IS NULL THEN 0
-		ELSE (tslh.stats->'stats'->'core'->'goals')::INT
+        ELSE (tslh.stats->'stats'->'core'->'goals')::INT
     END as home_goals,
-    
+
     -- Get away team name
     fpa.title as away,
-    
+
     -- Get away goals from team stats or 0 if NCP
-    CASE 
+    CASE
         WHEN r."invalidationId" IS NOT NULL OR
         m."invalidationId" IS NOT NULL OR
         tsla.stats IS NULL THEN 0
-		ELSE (tsla.stats->'stats'->'core'->'goals')::INT
+        ELSE (tsla.stats->'stats'->'core'->'goals')::INT
     END as away_goals,
-    
+
     -- Get winner team name
     CASE
         WHEN r."homeWon" THEN fph.title
         ELSE fpa.title
     END as winner,
-    
+
     -- If invalidation is filled in either serie or game, consider this game NCP
     r."invalidationId" IS NOT NULL OR m."invalidationId" IS NOT NULL as is_ncp
 
@@ -51,5 +51,5 @@ where sg."parentGroupId" = 291
 
 -- Order by series then individual games id
 order by
-	m.id,
-	r.id
+    m.id,
+    r.id
