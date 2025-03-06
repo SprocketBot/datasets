@@ -4,7 +4,7 @@ select
     r.id as round_id,
 
     -- Get home team name
-    fph.title as home,
+    fph.title as "Home",
 
     -- Get home goals from team stats or 0 if NCP
     CASE
@@ -12,10 +12,10 @@ select
         m."invalidationId" IS NOT NULL OR
         tslh.stats IS NULL THEN 0
         ELSE (tslh.stats->'stats'->'core'->'goals')::INT
-    END as home_goals,
+    END as "Home Goals",
 
     -- Get away team name
-    fpa.title as away,
+    fpa.title as "Away",
 
     -- Get away goals from team stats or 0 if NCP
     CASE
@@ -23,7 +23,7 @@ select
         m."invalidationId" IS NOT NULL OR
         tsla.stats IS NULL THEN 0
         ELSE (tsla.stats->'stats'->'core'->'goals')::INT
-    END as away_goals,
+    END as "Away Goals",
 
     -- Get winner team name
     CASE
