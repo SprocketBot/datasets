@@ -56,7 +56,7 @@ WITH
       LEFT JOIN sprocket.invalidation round_invalidation ON r."invalidationId" = round_invalidation.id
       LEFT JOIN sprocket.invalidation match_invalidation ON m."invalidationId" = match_invalidation.id
     WHERE
-      season.description = 'Season 17'
+      season.description = 'Season 18'
     GROUP BY
       m.id,
       sf.id,

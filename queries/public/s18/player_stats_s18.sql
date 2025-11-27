@@ -51,7 +51,18 @@ SELECT
       psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against'
     )::numeric,
     2
-  ) as shots_against
+  ) as shots_against,
+  ROUND(
+      (
+      psl.stats -> 'otherStats' -> 'stats' -> 'demo' -> 'inflicted'
+    )::numeric, 2
+    ) AS demos_inflicted,
+  ROUND(
+      (
+      psl.stats -> 'otherStats' -> 'stats' -> 'demo' -> 'taken'
+    )::numeric, 2
+    ) AS demos_taken
+
 FROM
   sprocket.player_stat_line psl
   INNER JOIN sprocket.player p on psl."playerId" = p.id
@@ -60,14 +71,12 @@ FROM
   INNER JOIN sprocket.game_mode gm ON m."gameModeId" = gm.id
   INNER JOIN sprocket.game_skill_group_profile gsgp ON m."skillGroupId" = gsgp."skillGroupId"
   INNER JOIN sprocket.team_stat_line tsl ON psl."teamStatsId" = tsl.id
-
-      
   INNER JOIN sprocket.match_parent mp ON mp.id = m."matchParentId"
   INNER JOIN sprocket.schedule_fixture sf ON mp."fixtureId" = sf.id
   INNER JOIN sprocket.schedule_group sg ON sf."scheduleGroupId" = sg.id
 
 WHERE
-  sg."parentGroupId" = 219
+  sg."parentGroupId" = 291
 
 ORDER BY
   member_id,
