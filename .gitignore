@@ -6,3 +6,4 @@ env
 Sprocket DS.session.sql
 .idea
 node_modules/
+*DS_Store*
