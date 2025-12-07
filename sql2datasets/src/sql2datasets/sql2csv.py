@@ -481,8 +481,8 @@ def main() -> None:
     args = parser.parse_args()
 
     # Get package metadata from pyproject.toml for version and author information
-    dist = distribution("mlepysak")
-    package_version = version("mlepysak")
+    dist = distribution("sql2datasets")
+    package_version = version("sql2datasets")
     package_author = dist.metadata["Author"]
 
     # Display version information if requested
