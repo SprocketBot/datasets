@@ -7,3 +7,9 @@ Sprocket DS.session.sql
 .idea
 node_modules/
 *DS_Store*
+
+# Credential files
+*.pgpass
+*-aws-creds
+.mle-aws-creds
+.mle.pgpass

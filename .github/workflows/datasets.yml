@@ -1,0 +1,48 @@
+name: Generate and Upload Datasets
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  generate-datasets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install sql2datasets with dependencies
+        run: |
+          cd sql2datasets
+          pip install -e .
+
+      - name: Create credentials files
+        run: |
+          mkdir -p /tmp/creds
+          echo "${{ secrets.PGPASS_CONTENT }}" > /tmp/creds/.pgpass
+          echo "${{ secrets.AWS_CREDS_CONTENT }}" > /tmp/creds/.aws-creds
+          chmod 600 /tmp/creds/.pgpass
+
+      - name: Run sql2csv
+        run: |
+          sql2csv \
+            --input-sql-dir ${{ github.workspace }} \
+            --output-dir /tmp/output \
+            --pgsql-creds-file /tmp/creds/.pgpass \
+            --aws-creds-file /tmp/creds/.aws-creds
+
+      - name: Clean up credentials
+        if: always()
+        run: |
+          rm -rf /tmp/creds
