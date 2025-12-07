@@ -7,14 +7,19 @@ License   - MIT
 """
 
 import argparse
+import json
 import logging
 import os
+import re
 from importlib.metadata import distribution, version
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 import boto3
+import markdown
 import pandas as pd
 import psycopg2
+import yaml
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
@@ -342,6 +347,462 @@ def generate_html_index(args, dataset_files: List[Dict[str, str]], base_url: str
     return html_content
 
 
+def parse_markdown_frontmatter(md_path: str) -> Tuple[Optional[Dict], str]:
+    """Parse markdown file with optional YAML frontmatter."""
+    if not os.path.exists(md_path):
+        return None, ""
+
+    with open(md_path, 'r') as f:
+        content = f.read()
+
+    # Check for frontmatter
+    frontmatter = None
+    body = content
+
+    if content.startswith('---'):
+        parts = content.split('---', 2)
+        if len(parts) >= 3:
+            try:
+                frontmatter = yaml.safe_load(parts[1])
+                body = parts[2].strip()
+            except yaml.YAMLError:
+                pass
+
+    return frontmatter, body
+
+
+def generate_static_site(dataset_files: List[Dict[str, str]], output_dir: str, input_sql_dir: str, base_url: str) -> None:
+    """Generate a static website for browsing datasets."""
+    logger.info("Generating static website")
+
+    site_dir = os.path.join(output_dir, "site")
+    os.makedirs(site_dir, exist_ok=True)
+
+    # Common CSS for dark theme
+    css = """
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: #1a1a1a;
+        color: #e0e0e0;
+        line-height: 1.6;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    header {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border-left: 4px solid #4CAF50;
+    }
+
+    h1 {
+        color: #4CAF50;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        color: #66BB6A;
+        margin: 30px 0 15px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    h3 {
+        color: #81C784;
+        margin: 20px 0 10px 0;
+    }
+
+    .dataset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .dataset-card {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .dataset-card:hover {
+        transform: translateY(-2px);
+        border-color: #4CAF50;
+    }
+
+    .dataset-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #4CAF50;
+    }
+
+    .download-links {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: inline-block;
+    }
+
+    .btn-csv {
+        background: #2196F3;
+        color: white;
+    }
+
+    .btn-csv:hover {
+        background: #1976D2;
+    }
+
+    .btn-json {
+        background: #FF9800;
+        color: white;
+    }
+
+    .btn-json:hover {
+        background: #F57C00;
+    }
+
+    .btn-parquet {
+        background: #9C27B0;
+        color: white;
+    }
+
+    .btn-parquet:hover {
+        background: #7B1FA2;
+    }
+
+    .btn-view {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #388E3C;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: #2a2a2a;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+    }
+
+    th {
+        background: #333;
+        color: #4CAF50;
+        font-weight: 600;
+    }
+
+    tr:hover {
+        background: #252525;
+    }
+
+    .metadata {
+        background: #2a2a2a;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #2196F3;
+    }
+
+    .metadata dt {
+        font-weight: bold;
+        color: #4CAF50;
+        margin-top: 10px;
+    }
+
+    .metadata dd {
+        margin-left: 20px;
+        color: #b0b0b0;
+    }
+
+    code {
+        background: #1a1a1a;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        color: #FF9800;
+    }
+
+    pre {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 15px 0;
+    }
+
+    pre code {
+        background: none;
+        padding: 0;
+    }
+
+    .description {
+        background: #2a2a2a;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #FF9800;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .example-query {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border-left: 4px solid #9C27B0;
+    }
+
+    .example-title {
+        color: #9C27B0;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    """
+
+    # Write CSS file
+    with open(os.path.join(site_dir, "style.css"), 'w') as f:
+        f.write(css)
+
+    # Generate individual dataset pages
+    dataset_pages = []
+    for file_dict in dataset_files:
+        if not file_dict:
+            continue
+
+        base_name = None
+        for fmt, filename in file_dict.items():
+            base_name = filename.replace(f".{fmt}", "")
+            break
+
+        if not base_name:
+            continue
+
+        # Try to find corresponding SQL and markdown files
+        sql_path = None
+        md_path = None
+
+        # Search for SQL file
+        for root, dirs, files in os.walk(input_sql_dir):
+            if f"{base_name}.sql" in files:
+                sql_path = os.path.join(root, f"{base_name}.sql")
+                md_path = os.path.join(root, f"{base_name}.md")
+                break
+
+        # Parse markdown if it exists
+        frontmatter, description = parse_markdown_frontmatter(md_path) if md_path else (None, "")
+
+        # Load a sample of the data
+        sample_df = None
+        if 'csv' in file_dict:
+            csv_path = os.path.join(output_dir, file_dict['csv'])
+            if os.path.exists(csv_path):
+                try:
+                    sample_df = pd.read_csv(csv_path, nrows=10)
+                except Exception as e:
+                    logger.warning(f"Could not load sample for {base_name}: {e}")
+
+        # Generate dataset page
+        dataset_page_content = generate_dataset_page(
+            base_name, file_dict, base_url, sample_df, description, frontmatter
+        )
+
+        page_filename = f"{base_name}.html"
+        with open(os.path.join(site_dir, page_filename), 'w') as f:
+            f.write(dataset_page_content)
+
+        dataset_pages.append({
+            'name': base_name,
+            'files': file_dict,
+            'page': page_filename,
+            'description': description.split('\n')[0] if description else ""
+        })
+
+    # Generate index page
+    index_content = generate_site_index(dataset_pages)
+    with open(os.path.join(site_dir, "index.html"), 'w') as f:
+        f.write(index_content)
+
+    logger.info(f"Static site generated at {site_dir}")
+
+
+def generate_dataset_page(name: str, files: Dict[str, str], base_url: str,
+                          sample: Optional[pd.DataFrame], description: str,
+                          frontmatter: Optional[Dict]) -> str:
+    """Generate HTML page for a single dataset."""
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{name} - Dataset</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to all datasets</a>
+
+        <header>
+            <h1>{name}</h1>
+        </header>
+"""
+
+    # Description
+    if description:
+        md_html = markdown.markdown(description)
+        html += f"""
+        <div class="description">
+            {md_html}
+        </div>
+"""
+
+    # Download links
+    html += """
+        <h2>Download</h2>
+        <div class="download-links">
+"""
+
+    for fmt in ['csv', 'json', 'parquet']:
+        if fmt in files:
+            url = f"https://{base_url}/{files[fmt]}"
+            fmt_upper = fmt.upper()
+            html += f'            <a href="{url}" class="btn btn-{fmt}" download>{fmt_upper}</a>\n'
+
+    html += """
+        </div>
+"""
+
+    # Examples from frontmatter
+    if frontmatter and 'examples' in frontmatter:
+        html += """
+        <h2>Example Queries</h2>
+"""
+        for example in frontmatter['examples']:
+            title = example.get('title', 'Example')
+            query = example.get('query', '')
+            html += f"""
+        <div class="example-query">
+            <div class="example-title">{title}</div>
+            <pre><code>{query}</code></pre>
+        </div>
+"""
+
+    # Column information and sample
+    if sample is not None and not sample.empty:
+        html += f"""
+        <h2>Columns</h2>
+        <div class="metadata">
+            <dl>
+                <dt>Total Columns:</dt>
+                <dd>{len(sample.columns)}</dd>
+                <dt>Column Names:</dt>
+                <dd>{', '.join(sample.columns.tolist())}</dd>
+            </dl>
+        </div>
+
+        <h2>Data Sample (First 10 Rows)</h2>
+        <div style="overflow-x: auto;">
+            {sample.to_html(index=False, classes='', border=0)}
+        </div>
+"""
+
+    html += """
+    </div>
+</body>
+</html>"""
+
+    return html
+
+
+def generate_site_index(datasets: List[Dict]) -> str:
+    """Generate the main index page for the static site."""
+
+    html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLE Datasets</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Minor League Esports - Public Datasets</h1>
+            <p>Explore and download datasets from the Sprocket Database</p>
+        </header>
+
+        <h2>Available Datasets</h2>
+        <div class="dataset-grid">
+"""
+
+    for dataset in datasets:
+        name = dataset['name']
+        desc = dataset['description'][:100] + '...' if len(dataset['description']) > 100 else dataset['description']
+        page = dataset['page']
+
+        html += f"""
+            <div class="dataset-card">
+                <div class="dataset-title">{name}</div>
+                <p style="margin: 10px 0; color: #b0b0b0; font-size: 0.9em;">{desc if desc else 'No description available'}</p>
+                <div class="download-links">
+                    <a href="{page}" class="btn btn-view">View Details</a>
+                </div>
+            </div>
+"""
+
+    html += """
+        </div>
+    </div>
+</body>
+</html>"""
+
+    return html
+
+
 def process_sql_file(file_path: str, args, output_dir: str, input_sql_dir: str) -> Dict[str, str]:
     """
     Process a single SQL file and export to CSV, JSON, and Parquet formats.
@@ -554,6 +1015,9 @@ def main() -> None:
 
         # Upload the HTML index file to S3
         upload_to_s3("index.html", html_file_path)
+
+        # Generate static site
+        generate_static_site(dataset_files, args.output_dir, args.input_sql_dir, args.html_loc)
 
     logger.info("SQL to CSV conversion process completed")
 

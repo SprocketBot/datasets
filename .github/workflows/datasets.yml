@@ -9,6 +9,17 @@ on:
       - main
   workflow_dispatch: # Allow manual trigger
 
+# Allow GitHub Actions to deploy to Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   generate-datasets:
     runs-on: ubuntu-latest
@@ -37,7 +48,7 @@ jobs:
       - name: Run sql2csv
         run: |
           sql2csv \
-            --input-sql-dir ${{ github.workspace }} \
+            --input-sql-dir ${{ github.workspace }}/queries \
             --output-dir /tmp/output \
             --pgsql-creds-file /tmp/creds/.pgpass \
             --aws-creds-file /tmp/creds/.aws-creds
@@ -46,3 +57,15 @@ jobs:
         if: always()
         run: |
           rm -rf /tmp/creds
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '/tmp/output/site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
