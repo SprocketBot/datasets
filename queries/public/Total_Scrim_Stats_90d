@@ -1,9 +1,26 @@
 SELECT
-  up."displayName" AS name,
   p.id AS sprocket_player_id,
-  gm.code AS gamemode,
-  gsgp.description AS skill_group,
+  MAX(up."displayName") AS name,
+
+  CASE gm.code
+    WHEN 'RL_DOUBLES' THEN '2s'
+    WHEN 'RL_STANDARD' THEN '3s'
+    ELSE gm.code
+  END AS gamemode,
+
+  CASE gsgp.description
+    WHEN 'Foundation League' THEN 'FL'
+    WHEN 'Academy League' THEN 'AL'
+    WHEN 'Champion League' THEN 'CL'
+    WHEN 'Master League' THEN 'ML'
+    WHEN 'Premier League' THEN 'PL'
+    ELSE gsgp.description
+  END AS skill_group,
+
   sm."createdAt" AS scrim_created_at,
+
+  -- Privacy-friendly stable scrim identifier (hashed)
+  md5(sm.id::text) AS scrim_key,
 
   COUNT(psl.id) AS rounds_count,
 
@@ -13,7 +30,26 @@ SELECT
       WHEN psl."isHome" = false AND r."homeWon" = false THEN 1
       ELSE 0
     END
-  )::float / NULLIF(COUNT(psl.id), 0) AS win_percentage,
+  ) AS round_wins,
+
+  (SUM(
+    CASE
+      WHEN psl."isHome" = true  AND r."homeWon" = true  THEN 1
+      WHEN psl."isHome" = false AND r."homeWon" = false THEN 1
+      ELSE 0
+    END
+  )::float / NULLIF(COUNT(psl.id), 0)) AS win_percentage,
+
+  CASE
+    WHEN SUM(
+      CASE
+        WHEN psl."isHome" = true  AND r."homeWon" = true  THEN 1
+        WHEN psl."isHome" = false AND r."homeWon" = false THEN 1
+        ELSE 0
+      END
+    ) > (COUNT(psl.id) / 2.0)
+    THEN TRUE ELSE FALSE
+  END AS did_win_scrim,
 
   AVG((psl.stats -> 'dpi')::numeric) AS dpi,
   AVG((psl.stats -> 'gpi')::numeric) AS avg_sprocket_rating,
@@ -26,8 +62,8 @@ SELECT
   SUM(((psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots')::numeric)) AS shots,
   SUM(((psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'goals_against')::numeric)) AS goals_against,
   SUM(((psl.stats -> 'otherStats' -> 'stats' -> 'core' -> 'shots_against')::numeric)) AS shots_against,
-
   SUM(((psl.stats -> 'otherStats' -> 'stats' -> 'demo' -> 'inflicted')::numeric)) AS demos
+
 FROM sprocket.player_stat_line psl
 JOIN sprocket.player p ON psl."playerId" = p.id
 JOIN sprocket.round r ON psl."roundId" = r.id
@@ -39,10 +75,12 @@ JOIN sprocket.scrim_meta sm ON mp."scrimMetaId" = sm.id
 JOIN sprocket."member" mem ON p."memberId" = mem.id
 JOIN sprocket."user" u ON mem."userId" = u.id
 JOIN sprocket.user_profile up ON u.id = up."userId"
+
 WHERE sm."createdAt" >= current_date - interval '90 days'
+
 GROUP BY
-  up."displayName",
   p.id,
   gm.code,
   gsgp.description,
-  sm."createdAt";
+  sm."createdAt",
+  sm.id;
