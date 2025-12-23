@@ -76,8 +76,7 @@ JOIN sprocket."member" mem ON p."memberId" = mem.id
 JOIN sprocket."user" u ON mem."userId" = u.id
 JOIN sprocket.user_profile up ON u.id = up."userId"
 
-WHERE sm."createdAt" >= current_date - interval '90 days'
-
+WHERE sm."createdAt" >= (NOW() - INTERVAL '90 days')
 GROUP BY
   p.id,
   gm.code,
