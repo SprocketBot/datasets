@@ -19,8 +19,7 @@ SELECT
 
   sm."createdAt" AS scrim_created_at,
 
-  -- Privacy-friendly stable scrim identifier (hashed)
-  md5(sm.id::text) AS scrim_key,
+  sm.id AS scrim_meta_id,
 
   COUNT(psl.id) AS rounds_count,
 
@@ -76,7 +75,7 @@ JOIN sprocket."member" mem ON p."memberId" = mem.id
 JOIN sprocket."user" u ON mem."userId" = u.id
 JOIN sprocket.user_profile up ON u.id = up."userId"
 
-WHERE sm."createdAt" >= (NOW() - INTERVAL '90 days')
+WHERE sm."createdAt" >= date_trunc('month', NOW() - INTERVAL '1 year')
 GROUP BY
   p.id,
   gm.code,
