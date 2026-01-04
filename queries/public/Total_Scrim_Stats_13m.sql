@@ -75,7 +75,7 @@ JOIN sprocket."member" mem ON p."memberId" = mem.id
 JOIN sprocket."user" u ON mem."userId" = u.id
 JOIN sprocket.user_profile up ON u.id = up."userId"
 
-WHERE sm."createdAt" >= (NOW() - INTERVAL '13 months')
+WHERE sm."createdAt" >= date_trunc('month', NOW() - INTERVAL '1 year')
 GROUP BY
   p.id,
   gm.code,
