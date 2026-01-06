@@ -1,3 +1,18 @@
+WITH scrim_points_earned AS (
+	--doing this to account for suspected per-round of scrim duplication happening in sprocket.eligibility_data table
+	--since it was outputting rows per each game played in 3 game scrims, users were recieving 3x the points they should
+
+	SELECT DISTINCT
+		ed."createdAt"
+		, ed.points
+		, ed."matchParentId"
+		, ed."playerId"
+	FROM sprocket.eligibility_data ed
+	WHERE ed."createdAt" >= '2025-09-10'
+	ORDER BY ed."createdAt"
+
+)
+
 SELECT
   p.id AS sprocket_player_id,
   MAX(up."displayName") AS name,
@@ -20,6 +35,8 @@ SELECT
   sm."createdAt" AS scrim_created_at,
 
   sm.id AS scrim_meta_id,
+  
+  spe.points AS scrim_points_earned,
 
   COUNT(psl.id) AS rounds_count,
 
@@ -74,6 +91,7 @@ JOIN sprocket.scrim_meta sm ON mp."scrimMetaId" = sm.id
 JOIN sprocket."member" mem ON p."memberId" = mem.id
 JOIN sprocket."user" u ON mem."userId" = u.id
 JOIN sprocket.user_profile up ON u.id = up."userId"
+JOIN scrim_points_earned spe ON mp.id = spe."matchParentId" AND p.id = spe."playerId"
 
 WHERE sm."createdAt" >= date_trunc('month', NOW() - INTERVAL '1 year')
 GROUP BY
@@ -81,4 +99,5 @@ GROUP BY
   gm.code,
   gsgp.description,
   sm."createdAt",
-  sm.id;
+  sm.id,
+  spe.points;
