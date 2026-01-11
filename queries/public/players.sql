@@ -82,4 +82,3 @@ FROM
   LEFT JOIN mledb.team_to_captain ttc ON mle_p.id = ttc.player_id
   LEFT JOIN scrim_points sp ON sp.player_id = mle_p.id
   LEFT JOIN eligibility_date ed ON ed.player_id = p.id
-  
