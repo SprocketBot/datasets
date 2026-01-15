@@ -10,7 +10,7 @@ WITH
     GROUP BY
       2
   ),
-eligibility_date as (
+  eligibility_date as (
     SELECT
         ed.created_at + interval '30 days' as "Eligible Until",
         sum_points as "Total Points",
@@ -42,7 +42,11 @@ eligibility_date as (
             1, 2, 3, 4
         ORDER BY ed.created_at DESC
         ) ed
-    WHERE sum_points = 30
+    LEFT JOIN mledb.player p
+		  ON ed.player_id = p.id
+    LEFT JOIN mledb.salary_cap sc
+      ON p.league = sc.league
+    WHERE sum_points = sc.eligibility_requirement
     ORDER BY
         ed.player_id
         , ed.created_at DESC
