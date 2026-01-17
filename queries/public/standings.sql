@@ -13,20 +13,18 @@ WITH
   raw_standings_data AS (
     SELECT
       SUM(
-      CASE
-           WHEN r."homeWon" THEN 1
-           ELSE 0
-      END
-      )
-      as homeWins,
+        CASE
+          WHEN r."homeWon" THEN 1
+          ELSE 0
+        END
+      ) as homeWins,
       -- This case statement should mirror the above with THEN x ELSE y reversed to THEN y ELSE x
       SUM(
-              CASE
-                WHEN r."homeWon" THEN 0
-                ELSE 1
-              END
-        )
-      as awayWins,
+        CASE
+          WHEN r."homeWon" THEN 0
+          ELSE 1
+        END
+      ) as awayWins,
       sg.description as match,
       home.title as home,
       away.title as away,
