@@ -12,39 +12,54 @@ WITH
   ),
   eligibility_date as (
     SELECT
-      ed."createdAt" + interval '30 days' as "Eligible Until",
+      ed.created_at + interval '30 days' as "Eligible Until",
       sum_points as "Total Points",
-      ed."playerId"
+      ed.player_id
     FROM
       (
+        -- can uncomment below once we rememdy the numorous issues in the sprocket.eligibility_data table
+        --         SELECT
+        --            ed."createdAt",
+        --            ed.points,
+        --            ed."matchParentId",
+        --            ed."playerId",
+        --            SUM(ed.points) OVER (PARTITION BY ed."playerId" ORDER BY ed."createdAt" DESC) AS sum_points
+        --        FROM sprocket.eligibility_data ed
+        --        WHERE ed."createdAt" >= CURRENT_DATE - interval '30 days'
+        --        GROUP BY
+        --            1, 2, 3, 4
+        --        ORDER BY ed."createdAt" DESC
+        -- temporary fix using mledb.eligibility_data table, remove once above is uncommented
         SELECT
-          ed."createdAt",
-          ed.points,
-          ed."matchParentId",
-          ed."playerId",
-          SUM(ed.points) OVER (
+          ed.created_at,
+          ed.scrim_points,
+          ed.scrim_id,
+          ed.player_id,
+          SUM(ed.scrim_points) OVER (
             PARTITION BY
-              ed."playerId"
+              ed.player_id
             ORDER BY
-              ed."createdAt" DESC
+              ed.created_at DESC
           ) AS sum_points
         FROM
-          sprocket.eligibility_data ed
+          mledb.eligibility_data ed
         WHERE
-          ED."createdAt" >= CURRENT_DATE - interval '30 days'
+          ed.created_at >= CURRENT_DATE - interval '30 days'
         GROUP BY
           1,
           2,
           3,
           4
         ORDER BY
-          ed."createdAt" DESC
-      ) ED
+          ed.created_at DESC
+      ) ed
+      LEFT JOIN mledb.player p ON ed.player_id = p.id
+      LEFT JOIN mledb.salary_cap sc ON p.league = sc.league
     WHERE
-      sum_points = 30
+      sum_points = sc.eligibility_requirement
     ORDER BY
-      ed."playerId",
-      ed."createdAt" desc
+      ed.player_id,
+      ed.created_at DESC
   )
 SELECT
   mp.name,
@@ -75,7 +90,7 @@ FROM
   INNER JOIN sprocket.member_profile mp ON p."memberId" = mp."memberId"
   INNER JOIN mledb_bridge.player_to_player bridge_ptp ON bridge_ptp."sprocketPlayerId" = p.id
   INNER JOIN mledb.player mle_p ON bridge_ptp."mledPlayerId" = mle_p.id
-  inner join mledb.team t on mle_p.team_name = t.name
-  left join mledb.team_to_captain ttc on mle_p.id = ttc.player_id
+  INNER JOIN mledb.team t ON mle_p.team_name = t.name
+  LEFT JOIN mledb.team_to_captain ttc ON mle_p.id = ttc.player_id
   LEFT JOIN scrim_points sp ON sp.player_id = mle_p.id
-  left join eligibility_date ed on ed."playerId" = p.id
+  LEFT JOIN eligibility_date ed ON ed.player_id = mle_p.id
