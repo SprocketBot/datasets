@@ -24,4 +24,4 @@
   - There should be at least one item here
 
 - Now you can test all runs with: `python ./src/flows/process-query-directory.py`
-  - Check results of test run here: https://f004.backblazeb2.com/file/sprocket-artifacts/test/pages/index.html
+  - Check results of test run here: https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/test/pages/index.html

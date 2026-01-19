@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/sprdb",
+  base: "https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/public/pages/assets/sprdb",
   build: {
     lib: {
       entry: "./src/index.ts",
