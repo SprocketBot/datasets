@@ -1,10 +1,10 @@
 function p(i, t, e, n) {
   function s(r) {
-    return r instanceof e ? r : new e(function(o) {
+    return r instanceof e ? r : new e(function (o) {
       o(r);
     });
   }
-  return new (e || (e = Promise))(function(r, o) {
+  return new (e || (e = Promise))(function (r, o) {
     function a(d) {
       try {
         u(n.next(d));
@@ -31,7 +31,7 @@ function Pn(i) {
     return e.call(i);
   if (i && typeof i.length == "number")
     return {
-      next: function() {
+      next: function () {
         return i && n >= i.length && (i = void 0), { value: i && i[n++], done: !i };
       }
     };
@@ -44,12 +44,12 @@ function At(i, t, e) {
   if (!Symbol.asyncIterator)
     throw new TypeError("Symbol.asyncIterator is not defined.");
   var n = e.apply(i, t || []), s, r = [];
-  return s = {}, o("next"), o("throw"), o("return"), s[Symbol.asyncIterator] = function() {
+  return s = {}, o("next"), o("throw"), o("return"), s[Symbol.asyncIterator] = function () {
     return this;
   }, s;
   function o(f) {
-    n[f] && (s[f] = function(T) {
-      return new Promise(function(j, Vt) {
+    n[f] && (s[f] = function (T) {
+      return new Promise(function (j, Vt) {
         r.push([f, T, j, Vt]) > 1 || a(f, T);
       });
     });
@@ -76,13 +76,13 @@ function At(i, t, e) {
 }
 function Ke(i) {
   var t, e;
-  return t = {}, n("next"), n("throw", function(s) {
+  return t = {}, n("next"), n("throw", function (s) {
     throw s;
-  }), n("return"), t[Symbol.iterator] = function() {
+  }), n("return"), t[Symbol.iterator] = function () {
     return this;
   }, t;
   function n(s, r) {
-    t[s] = i[s] ? function(o) {
+    t[s] = i[s] ? function (o) {
       return (e = !e) ? { value: E(i[s](o)), done: !1 } : r ? r(o) : o;
     } : r;
   }
@@ -91,18 +91,18 @@ function oe(i) {
   if (!Symbol.asyncIterator)
     throw new TypeError("Symbol.asyncIterator is not defined.");
   var t = i[Symbol.asyncIterator], e;
-  return t ? t.call(i) : (i = typeof Pn == "function" ? Pn(i) : i[Symbol.iterator](), e = {}, n("next"), n("throw"), n("return"), e[Symbol.asyncIterator] = function() {
+  return t ? t.call(i) : (i = typeof Pn == "function" ? Pn(i) : i[Symbol.iterator](), e = {}, n("next"), n("throw"), n("return"), e[Symbol.asyncIterator] = function () {
     return this;
   }, e);
   function n(r) {
-    e[r] = i[r] && function(o) {
-      return new Promise(function(a, c) {
+    e[r] = i[r] && function (o) {
+      return new Promise(function (a, c) {
         o = i[r](o), s(a, c, o.done, o.value);
       });
     };
   }
   function s(r, o, a, c) {
-    Promise.resolve(c).then(function(u) {
+    Promise.resolve(c).then(function (u) {
       r({ value: u, done: a });
     }, o);
   }
@@ -111,7 +111,7 @@ const Kr = new TextDecoder("utf-8"), Hi = (i) => Kr.decode(i), Jr = new TextEnco
 function io(i) {
   const t = i[0] ? [i[0]] : [];
   let e, n, s, r;
-  for (let o, a, c = 0, u = 0, d = i.length; ++c < d; ) {
+  for (let o, a, c = 0, u = 0, d = i.length; ++c < d;) {
     if (o = t[u], a = i[c], !o || !a || o.buffer !== a.buffer || a.byteOffset < o.byteOffset) {
       a && (t[++u] = a);
       continue;
@@ -132,7 +132,7 @@ function Ot(i, t) {
   const e = io(i), n = e.reduce((d, h) => d + h.byteLength, 0);
   let s, r, o, a = 0, c = -1;
   const u = Math.min(t || Number.POSITIVE_INFINITY, n);
-  for (const d = e.length; ++c < d; ) {
+  for (const d = e.length; ++c < d;) {
     if (s = e[c], r = s.subarray(0, Math.min(s.length, u - a)), u <= a + r.length) {
       r.length < s.length ? e[c] = s.subarray(r.length) : r.length === s.length && c++, o ? xn(o, r, a) : o = r;
       break;
@@ -162,11 +162,11 @@ function ls(i, t) {
   return At(this, arguments, function* () {
     if (ae(t))
       return yield E(yield E(yield* Ke(oe(ls(i, yield E(t))))));
-    const n = function(o) {
+    const n = function (o) {
       return At(this, arguments, function* () {
         yield yield E(yield E(o));
       });
-    }, s = function(o) {
+    }, s = function (o) {
       return At(this, arguments, function* () {
         yield E(yield* Ke(oe(Ki(function* (a) {
           let c = null;
@@ -178,7 +178,7 @@ function ls(i, t) {
     }, r = typeof t == "string" || ArrayBuffer.isView(t) || t instanceof ArrayBuffer || t instanceof un ? n(t) : ze(t) ? s(t) : Oe(t) ? t : n(t);
     return yield E(
       // otherwise if AsyncIterable, use it
-      yield* Ke(oe(Ki(function(o) {
+      yield* Ke(oe(Ki(function (o) {
         return At(this, arguments, function* () {
           let a = null;
           do
@@ -193,7 +193,7 @@ const ro = (i) => ls(Uint8Array, i);
 function dn(i, t, e) {
   if (i !== 0) {
     e = e.slice(0, t + 1);
-    for (let n = -1; ++n <= t; )
+    for (let n = -1; ++n <= t;)
       e[n] += i;
   }
   return e;
@@ -372,39 +372,39 @@ function ho(i) {
   });
 }
 var rt;
-(function(i) {
+(function (i) {
   i[i.V1 = 0] = "V1", i[i.V2 = 1] = "V2", i[i.V3 = 2] = "V3", i[i.V4 = 3] = "V4", i[i.V5 = 4] = "V5";
 })(rt || (rt = {}));
 var ot;
-(function(i) {
+(function (i) {
   i[i.Sparse = 0] = "Sparse", i[i.Dense = 1] = "Dense";
 })(ot || (ot = {}));
 var X;
-(function(i) {
+(function (i) {
   i[i.HALF = 0] = "HALF", i[i.SINGLE = 1] = "SINGLE", i[i.DOUBLE = 2] = "DOUBLE";
 })(X || (X = {}));
 var Pt;
-(function(i) {
+(function (i) {
   i[i.DAY = 0] = "DAY", i[i.MILLISECOND = 1] = "MILLISECOND";
 })(Pt || (Pt = {}));
 var R;
-(function(i) {
+(function (i) {
   i[i.SECOND = 0] = "SECOND", i[i.MILLISECOND = 1] = "MILLISECOND", i[i.MICROSECOND = 2] = "MICROSECOND", i[i.NANOSECOND = 3] = "NANOSECOND";
 })(R || (R = {}));
 var Wt;
-(function(i) {
+(function (i) {
   i[i.YEAR_MONTH = 0] = "YEAR_MONTH", i[i.DAY_TIME = 1] = "DAY_TIME", i[i.MONTH_DAY_NANO = 2] = "MONTH_DAY_NANO";
 })(Wt || (Wt = {}));
 var D;
-(function(i) {
+(function (i) {
   i[i.NONE = 0] = "NONE", i[i.Schema = 1] = "Schema", i[i.DictionaryBatch = 2] = "DictionaryBatch", i[i.RecordBatch = 3] = "RecordBatch", i[i.Tensor = 4] = "Tensor", i[i.SparseTensor = 5] = "SparseTensor";
 })(D || (D = {}));
 var l;
-(function(i) {
+(function (i) {
   i[i.NONE = 0] = "NONE", i[i.Null = 1] = "Null", i[i.Int = 2] = "Int", i[i.Float = 3] = "Float", i[i.Binary = 4] = "Binary", i[i.Utf8 = 5] = "Utf8", i[i.Bool = 6] = "Bool", i[i.Decimal = 7] = "Decimal", i[i.Date = 8] = "Date", i[i.Time = 9] = "Time", i[i.Timestamp = 10] = "Timestamp", i[i.Interval = 11] = "Interval", i[i.List = 12] = "List", i[i.Struct = 13] = "Struct", i[i.Union = 14] = "Union", i[i.FixedSizeBinary = 15] = "FixedSizeBinary", i[i.FixedSizeList = 16] = "FixedSizeList", i[i.Map = 17] = "Map", i[i.Dictionary = -1] = "Dictionary", i[i.Int8 = -2] = "Int8", i[i.Int16 = -3] = "Int16", i[i.Int32 = -4] = "Int32", i[i.Int64 = -5] = "Int64", i[i.Uint8 = -6] = "Uint8", i[i.Uint16 = -7] = "Uint16", i[i.Uint32 = -8] = "Uint32", i[i.Uint64 = -9] = "Uint64", i[i.Float16 = -10] = "Float16", i[i.Float32 = -11] = "Float32", i[i.Float64 = -12] = "Float64", i[i.DateDay = -13] = "DateDay", i[i.DateMillisecond = -14] = "DateMillisecond", i[i.TimestampSecond = -15] = "TimestampSecond", i[i.TimestampMillisecond = -16] = "TimestampMillisecond", i[i.TimestampMicrosecond = -17] = "TimestampMicrosecond", i[i.TimestampNanosecond = -18] = "TimestampNanosecond", i[i.TimeSecond = -19] = "TimeSecond", i[i.TimeMillisecond = -20] = "TimeMillisecond", i[i.TimeMicrosecond = -21] = "TimeMicrosecond", i[i.TimeNanosecond = -22] = "TimeNanosecond", i[i.DenseUnion = -23] = "DenseUnion", i[i.SparseUnion = -24] = "SparseUnion", i[i.IntervalDayTime = -25] = "IntervalDayTime", i[i.IntervalYearMonth = -26] = "IntervalYearMonth";
 })(l || (l = {}));
 var Lt;
-(function(i) {
+(function (i) {
   i[i.OFFSET = 0] = "OFFSET", i[i.DATA = 1] = "DATA", i[i.VALIDITY = 2] = "VALIDITY", i[i.TYPE = 3] = "TYPE";
 })(Lt || (Lt = {}));
 const fo = void 0;
@@ -428,16 +428,16 @@ function bt(i, ...t) {
   return t.length === 0 ? Object.setPrototypeOf(k(this.TypedArray, i), this.constructor.prototype) : Object.setPrototypeOf(new this.TypedArray(i, ...t), this.constructor.prototype);
 }
 bt.prototype[po] = !0;
-bt.prototype.toJSON = function() {
+bt.prototype.toJSON = function () {
   return `"${ke(this)}"`;
 };
-bt.prototype.valueOf = function() {
+bt.prototype.valueOf = function () {
   return us(this);
 };
-bt.prototype.toString = function() {
+bt.prototype.toString = function () {
   return ke(this);
 };
-bt.prototype[Symbol.toPrimitive] = function(i = "default") {
+bt.prototype[Symbol.toPrimitive] = function (i = "default") {
   switch (i) {
     case "number":
       return us(this);
@@ -499,7 +499,7 @@ function Pi(i) {
   let r = -1;
   const o = n.length - 1;
   do {
-    for (e[0] = n[r = 0]; r < o; )
+    for (e[0] = n[r = 0]; r < o;)
       n[r++] = e[1] = e[0] / 10, e[0] = (e[0] - e[1] * 10 << 16) + n[r];
     n[r] = e[1] = e[0] / 10, e[0] = e[0] - e[1] * 10, t = `${e[0]}${t}`;
   } while (s[0] || s[1] || s[2] || s[3]);
@@ -1397,10 +1397,10 @@ const go = (i, t, e) => {
 }, Ro = (i, t, e) => {
   const n = i.children[0], s = i.valueOffsets, r = ft.getVisitFn(n);
   if (Array.isArray(e))
-    for (let o = -1, a = s[t], c = s[t + 1]; a < c; )
+    for (let o = -1, a = s[t], c = s[t + 1]; a < c;)
       r(n, a++, e[++o]);
   else
-    for (let o = -1, a = s[t], c = s[t + 1]; a < c; )
+    for (let o = -1, a = s[t], c = s[t + 1]; a < c;)
       r(n, a++, e.get(++o));
 }, Do = (i, t, e) => {
   const n = i.children[0], { valueOffsets: s } = i, r = ft.getVisitFn(n);
@@ -1432,10 +1432,10 @@ const go = (i, t, e) => {
 }, Vo = (i, t, e) => {
   const { stride: n } = i, s = i.children[0], r = ft.getVisitFn(s);
   if (Array.isArray(e))
-    for (let o = -1, a = t * n; ++o < n; )
+    for (let o = -1, a = t * n; ++o < n;)
       r(s, a + o, e[o]);
   else
-    for (let o = -1, a = t * n; ++o < n; )
+    for (let o = -1, a = t * n; ++o < n;)
       r(s, a + o, e.get(o));
 };
 w.prototype.visitBool = S(vo);
@@ -1490,7 +1490,7 @@ class yn {
   }
   toJSON() {
     const t = this[ge], e = this[pt], n = e.type.children, s = {};
-    for (let r = -1, o = n.length; ++r < o; )
+    for (let r = -1, o = n.length; ++r < o;)
       s[n[r].name] = et.visit(e.children[r], t);
     return s;
   }
@@ -1680,7 +1680,7 @@ class bn {
   }
   toJSON() {
     const t = this[It], e = this[we], n = {};
-    for (let s = -1, r = t.length; ++s < r; )
+    for (let s = -1, r = t.length; ++s < r;)
       n[t.get(s)] = et.visit(e, s);
     return n;
   }
@@ -1766,7 +1766,7 @@ function Ne(i) {
 }
 function ma(i) {
   const t = [];
-  for (let e = -1, n = i.length; ++e < n; )
+  for (let e = -1, n = i.length; ++e < n;)
     t[e] = Ne(i[e]);
   return Mi(t);
 }
@@ -1779,7 +1779,7 @@ function ba(i) {
 }
 function _a(i) {
   const t = [];
-  for (let e = -1, n = i.length; ++e < n; )
+  for (let e = -1, n = i.length; ++e < n;)
     t[e] = Ne(i.get(e));
   return Mi(t);
 }
@@ -1788,7 +1788,7 @@ function ga(i, t = !1) {
   if (!t && e.length === 0)
     return () => !1;
   const n = [];
-  for (let s = -1, r = e.length; ++s < r; )
+  for (let s = -1, r = e.length; ++s < r;)
     n[s] = Ne(i[e[s]]);
   return Mi(n, e);
 }
@@ -1814,7 +1814,7 @@ function wa(i, t) {
   const e = i.length;
   if (t.length !== e)
     return !1;
-  for (let n = -1; ++n < e; )
+  for (let n = -1; ++n < e;)
     if (!i[n](t[n]))
       return !1;
   return !0;
@@ -1823,7 +1823,7 @@ function Ia(i, t) {
   const e = i.length;
   if (t.length !== e)
     return !1;
-  for (let n = -1; ++n < e; )
+  for (let n = -1; ++n < e;)
     if (!i[n](t.get(n)))
       return !1;
   return !0;
@@ -1896,11 +1896,11 @@ function Ji(i, t, e) {
 function Sa(i, t, e) {
   let n = 0, s = Math.trunc(t);
   const r = new DataView(i.buffer, i.byteOffset, i.byteLength), o = e === void 0 ? i.byteLength : s + e;
-  for (; o - s >= 4; )
+  for (; o - s >= 4;)
     n += xi(r.getUint32(s)), s += 4;
-  for (; o - s >= 2; )
+  for (; o - s >= 2;)
     n += xi(r.getUint16(s)), s += 2;
-  for (; o - s >= 1; )
+  for (; o - s >= 1;)
     n += xi(r.getUint8(s)), s += 1;
   return n;
 }
@@ -1977,7 +1977,7 @@ class P {
     let r;
     const { buffers: o } = this;
     return (r = o[Lt.TYPE]) && (o[Lt.TYPE] = r.subarray(t, t + e)), (r = o[Lt.OFFSET]) && (o[Lt.OFFSET] = r.subarray(t, t + e + 1)) || // Otherwise if no offsets, slice the data buffer. Don't slice the data vector for Booleans, since the offset goes by bits not bytes
-    (r = o[Lt.DATA]) && (o[Lt.DATA] = s === 6 ? r : r.subarray(n * t, n * (t + e))), o;
+      (r = o[Lt.DATA]) && (o[Lt.DATA] = s === 6 ? r : r.subarray(n * t, n * (t + e))), o;
   }
   _sliceChildren(t, e, n) {
     return t.map((s) => s.slice(e, n));
@@ -2072,7 +2072,7 @@ class Yn {
     this.numChunks = t, this.getChunkIterator = e, this.chunkIndex = 0, this.chunkIterator = this.getChunkIterator(0);
   }
   next() {
-    for (; this.chunkIndex < this.numChunks; ) {
+    for (; this.chunkIndex < this.numChunks;) {
       const t = this.chunkIterator.next();
       if (!t.done)
         return t;
@@ -2092,7 +2092,7 @@ function pr(i) {
 }
 function yr(i, t, e, n) {
   const s = [];
-  for (let r = -1, o = i.length; ++r < o; ) {
+  for (let r = -1, o = i.length; ++r < o;) {
     const a = i[r], c = t[r], { length: u } = a;
     if (c >= n)
       break;
@@ -2122,7 +2122,7 @@ function Ie(i) {
   function t(e, n, s) {
     return i(e[n], s);
   }
-  return function(e) {
+  return function (e) {
     const n = this.data;
     return wn(n, this._offsets, e, t);
   };
@@ -2132,7 +2132,7 @@ function mr(i) {
   function e(n, s, r) {
     return i(n[s], r, t);
   }
-  return function(n, s) {
+  return function (n, s) {
     const r = this.data;
     t = s;
     const o = wn(r, this._offsets, n, e);
@@ -2143,7 +2143,7 @@ function br(i) {
   let t;
   function e(n, s, r) {
     let o = r, a = 0, c = 0;
-    for (let u = s - 1, d = n.length; ++u < d; ) {
+    for (let u = s - 1, d = n.length; ++u < d;) {
       const h = n[u];
       if (~(a = i(h, t, o)))
         return c + a;
@@ -2151,7 +2151,7 @@ function br(i) {
     }
     return -1;
   }
-  return function(n, s) {
+  return function (n, s) {
     t = n;
     const r = this.data, o = typeof s != "number" ? e(r, 0, 0) : wn(r, this._offsets, s, e);
     return t = void 0, o;
@@ -2180,14 +2180,14 @@ function B(i, t, e) {
   if (t === null)
     return Ba(i, e);
   const n = et.getVisitFn(i), s = Ne(t);
-  for (let r = (e || 0) - 1, o = i.length; ++r < o; )
+  for (let r = (e || 0) - 1, o = i.length; ++r < o;)
     if (s(n(i, r)))
       return r;
   return -1;
 }
 function _r(i, t, e) {
   const n = et.getVisitFn(i), s = Ne(t);
-  for (let r = (e || 0) - 1, o = i.length; ++r < o; )
+  for (let r = (e || 0) - 1, o = i.length; ++r < o;)
     if (s(n(i, r)))
       return r;
   return -1;
@@ -2353,13 +2353,13 @@ class Jt extends F {
 const Oa = ({ valueOffsets: i }, t) => 8 + (i[t + 1] - i[t]), Na = ({ valueOffsets: i }, t) => 8 + (i[t + 1] - i[t]), Ra = ({ valueOffsets: i, stride: t, children: e }, n) => {
   const s = e[0], { [n * t]: r } = i, { [n * t + 1]: o } = i, a = Nt.getVisitFn(s.type), c = s.slice(r, o - r);
   let u = 8;
-  for (let d = -1, h = o - r; ++d < h; )
+  for (let d = -1, h = o - r; ++d < h;)
     u += a(c, d);
   return u;
 }, Da = ({ stride: i, children: t }, e) => {
   const n = t[0], s = n.slice(e * i, i), r = Nt.getVisitFn(n.type);
   let o = 0;
-  for (let a = -1, c = s.length; ++a < c; )
+  for (let a = -1, c = s.length; ++a < c;)
     o += r(s, a);
   return o;
 }, La = (i, t) => i.type.mode === ot.Dense ? gr(i, t) : wr(i, t), gr = ({ type: i, children: t, typeIds: e, valueOffsets: n }, s) => {
@@ -2667,7 +2667,7 @@ class Zi {
 }
 const ji = 2, vt = 4, kt = 4, C = 4, $t = new Int32Array(2), Wn = new Float32Array($t.buffer), Gn = new Float64Array($t.buffer), He = new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
 var Xi;
-(function(i) {
+(function (i) {
   i[i.UTF8_BYTES = 1] = "UTF8_BYTES", i[i.UTF16_STRING = 2] = "UTF16_STRING";
 })(Xi || (Xi = {}));
 let Se = class Tr {
@@ -2925,7 +2925,7 @@ let Se = class Tr {
   prep(t, e) {
     t > this.minalign && (this.minalign = t);
     const n = ~(this.bb.capacity() - this.space + e) + 1 & t - 1;
-    for (; this.space < n + t + e; ) {
+    for (; this.space < n + t + e;) {
       const s = this.bb.capacity();
       this.bb = Br.growByteBuffer(this.bb), this.space += this.bb.capacity() - s;
     }
@@ -3112,16 +3112,16 @@ let Se = class Tr {
     let o = 0;
     const a = this.space;
     t:
-      for (e = 0; e < this.vtables.length; e++) {
-        const c = this.bb.capacity() - this.vtables[e];
-        if (r == this.bb.readInt16(c)) {
-          for (let u = ji; u < r; u += ji)
-            if (this.bb.readInt16(a + u) != this.bb.readInt16(c + u))
-              continue t;
-          o = this.vtables[e];
-          break;
-        }
+    for (e = 0; e < this.vtables.length; e++) {
+      const c = this.bb.capacity() - this.vtables[e];
+      if (r == this.bb.readInt16(c)) {
+        for (let u = ji; u < r; u += ji)
+          if (this.bb.readInt16(a + u) != this.bb.readInt16(c + u))
+            continue t;
+        o = this.vtables[e];
+        break;
       }
+    }
     return o ? (this.space = this.bb.capacity() - t, this.bb.writeInt32(this.space, o - t)) : (this.vtables.push(this.offset()), this.bb.writeInt32(this.bb.capacity() - t, this.offset() - t)), this.isNested = !1, t;
   }
   /**
@@ -3272,15 +3272,15 @@ class W {
   }
 }
 var Te;
-(function(i) {
+(function (i) {
   i[i.V1 = 0] = "V1", i[i.V2 = 1] = "V2", i[i.V3 = 2] = "V3", i[i.V4 = 3] = "V4", i[i.V5 = 4] = "V5";
 })(Te || (Te = {}));
 var Ee;
-(function(i) {
+(function (i) {
   i[i.Little = 0] = "Little", i[i.Big = 1] = "Big";
 })(Ee || (Ee = {}));
 var gi;
-(function(i) {
+(function (i) {
   i[i.DenseArray = 0] = "DenseArray";
 })(gi || (gi = {}));
 class st {
@@ -3433,7 +3433,7 @@ class ee {
   }
 }
 var wi;
-(function(i) {
+(function (i) {
   i[i.DAY = 0] = "DAY", i[i.MILLISECOND = 1] = "MILLISECOND";
 })(wi || (wi = {}));
 let Je = class fe {
@@ -3521,7 +3521,7 @@ class K {
   }
 }
 var Be;
-(function(i) {
+(function (i) {
   i[i.SECOND = 0] = "SECOND", i[i.MILLISECOND = 1] = "MILLISECOND", i[i.MICROSECOND = 2] = "MICROSECOND", i[i.NANOSECOND = 3] = "NANOSECOND";
 })(Be || (Be = {}));
 class St {
@@ -3591,7 +3591,7 @@ class Tt {
   }
 }
 var Ii;
-(function(i) {
+(function (i) {
   i[i.HALF = 0] = "HALF", i[i.SINGLE = 1] = "SINGLE", i[i.DOUBLE = 2] = "DOUBLE";
 })(Ii || (Ii = {}));
 class Et {
@@ -3625,7 +3625,7 @@ class Et {
   }
 }
 var vi;
-(function(i) {
+(function (i) {
   i[i.YEAR_MONTH = 0] = "YEAR_MONTH", i[i.DAY_TIME = 1] = "DAY_TIME", i[i.MONTH_DAY_NANO = 2] = "MONTH_DAY_NANO";
 })(vi || (vi = {}));
 class Bt {
@@ -3835,7 +3835,7 @@ class dt {
   }
 }
 var Si;
-(function(i) {
+(function (i) {
   i[i.Sparse = 0] = "Sparse", i[i.Dense = 1] = "Dense";
 })(Si || (Si = {}));
 class J {
@@ -3916,7 +3916,7 @@ class re {
   }
 }
 var V;
-(function(i) {
+(function (i) {
   i[i.NONE = 0] = "NONE", i[i.Null = 1] = "Null", i[i.Int = 2] = "Int", i[i.FloatingPoint = 3] = "FloatingPoint", i[i.Binary = 4] = "Binary", i[i.Utf8 = 5] = "Utf8", i[i.Bool = 6] = "Bool", i[i.Decimal = 7] = "Decimal", i[i.Date = 8] = "Date", i[i.Time = 9] = "Time", i[i.Timestamp = 10] = "Timestamp", i[i.Interval = 11] = "Interval", i[i.List = 12] = "List", i[i.Struct_ = 13] = "Struct_", i[i.Union = 14] = "Union", i[i.FixedSizeBinary = 15] = "FixedSizeBinary", i[i.FixedSizeList = 16] = "FixedSizeList", i[i.Map = 17] = "Map", i[i.Duration = 18] = "Duration", i[i.LargeBinary = 19] = "LargeBinary", i[i.LargeUtf8 = 20] = "LargeUtf8", i[i.LargeList = 21] = "LargeList", i[i.RunEndEncoded = 22] = "RunEndEncoded";
 })(V || (V = {}));
 let ct = class Xe {
@@ -4301,7 +4301,7 @@ function Qe(i, t) {
   return new Map([...i || /* @__PURE__ */ new Map(), ...t || /* @__PURE__ */ new Map()]);
 }
 function tn(i, t = /* @__PURE__ */ new Map()) {
-  for (let e = -1, n = i.length; ++e < n; ) {
+  for (let e = -1, n = i.length; ++e < n;) {
     const r = i[e].type;
     if (y.isDictionary(r)) {
       if (!t.has(r.id))
@@ -4344,11 +4344,11 @@ class je {
     this.schema = t, this.version = e, n && (this._recordBatches = n), s && (this._dictionaryBatches = s);
   }
   *recordBatches() {
-    for (let t, e = -1, n = this.numRecordBatches; ++e < n; )
+    for (let t, e = -1, n = this.numRecordBatches; ++e < n;)
       (t = this.getRecordBatch(e)) && (yield t);
   }
   *dictionaryBatches() {
-    for (let t, e = -1, n = this.numDictionaries; ++e < n; )
+    for (let t, e = -1, n = this.numDictionaries; ++e < n;)
       (t = this.getDictionaryBatch(e)) && (yield t);
   }
   getRecordBatch(t) {
@@ -4455,7 +4455,7 @@ class Ca extends Sn {
   close() {
     if (this._closedPromiseResolve) {
       const { resolvers: t } = this;
-      for (; t.length > 0; )
+      for (; t.length > 0;)
         t.shift().resolve(z);
       this._closedPromiseResolve(), this._closedPromiseResolve = void 0;
     }
@@ -4702,7 +4702,7 @@ class Ei extends Ae {
         typeof t != "number" && (t = Number.POSITIVE_INFINITY);
         let r = s, o = 0, a = 0;
         const c = Math.min(n, r + Math.min(n - r, t)), u = new Uint8Array(Math.max(0, (this.position = c) - r));
-        for (; (r += a) < c && (o += a) < u.byteLength; )
+        for (; (r += a) < c && (o += a) < u.byteLength;)
           ({ bytesRead: a } = yield e.read(u, o, u.byteLength - o, r));
         return u;
       }
@@ -4814,7 +4814,7 @@ class U extends Ar {
   /** @nocollapse */
   static fromString(t, e = new Uint32Array(2)) {
     const n = t.length, s = new U(e);
-    for (let r = 0; r < n; ) {
+    for (let r = 0; r < n;) {
       const o = Fe < n - r ? Fe : n - r, a = new U(new Uint32Array([Number.parseInt(t.slice(r, r + o), 10), 0])), c = new U(new Uint32Array([Tn[o], 0]));
       s.times(c), s.plus(a), r += o;
     }
@@ -4823,7 +4823,7 @@ class U extends Ar {
   /** @nocollapse */
   static convertArray(t) {
     const e = new Uint32Array(t.length * 2);
-    for (let n = -1, s = t.length; ++n < s; )
+    for (let n = -1, s = t.length; ++n < s;)
       U.from(t[n], new Uint32Array(e.buffer, e.byteOffset + 2 * n * 4, 2));
     return e;
   }
@@ -4861,7 +4861,7 @@ class Q extends Ar {
   /** @nocollapse */
   static fromString(t, e = new Uint32Array(2)) {
     const n = t.startsWith("-"), s = t.length, r = new Q(e);
-    for (let o = n ? 1 : 0; o < s; ) {
+    for (let o = n ? 1 : 0; o < s;) {
       const a = Fe < s - o ? Fe : s - o, c = new Q(new Uint32Array([Number.parseInt(t.slice(o, o + a), 10), 0])), u = new Q(new Uint32Array([Tn[a], 0]));
       r.times(u), r.plus(c), o += a;
     }
@@ -4870,7 +4870,7 @@ class Q extends Ar {
   /** @nocollapse */
   static convertArray(t) {
     const e = new Uint32Array(t.length * 2);
-    for (let n = -1, s = t.length; ++n < s; )
+    for (let n = -1, s = t.length; ++n < s;)
       Q.from(t[n], new Uint32Array(e.buffer, e.byteOffset + 2 * n * 4, 2));
     return e;
   }
@@ -4929,7 +4929,7 @@ class wt {
   /** @nocollapse */
   static fromString(t, e = new Uint32Array(4)) {
     const n = t.startsWith("-"), s = t.length, r = new wt(e);
-    for (let o = n ? 1 : 0; o < s; ) {
+    for (let o = n ? 1 : 0; o < s;) {
       const a = Fe < s - o ? Fe : s - o, c = new wt(new Uint32Array([Number.parseInt(t.slice(o, o + a), 10), 0, 0, 0])), u = new wt(new Uint32Array([Tn[a], 0, 0, 0]));
       r.times(u), r.plus(c), o += a;
     }
@@ -4938,7 +4938,7 @@ class wt {
   /** @nocollapse */
   static convertArray(t) {
     const e = new Uint32Array(t.length * 4);
-    for (let n = -1, s = t.length; ++n < s; )
+    for (let n = -1, s = t.length; ++n < s;)
       wt.from(t[n], new Uint32Array(e.buffer, e.byteOffset + 4 * 4 * n, 4));
     return e;
   }
@@ -5167,8 +5167,8 @@ function Ha(i, t) {
   let r = 0, o = 0, a = -1;
   const c = t.length;
   let u, d = [];
-  for (; s.numBatches-- > 0; ) {
-    for (o = Number.POSITIVE_INFINITY, a = -1; ++a < c; )
+  for (; s.numBatches-- > 0;) {
+    for (o = Number.POSITIVE_INFINITY, a = -1; ++a < c;)
       d[a] = u = t[a].shift(), o = Math.min(o, u ? u.length : o);
     Number.isFinite(o) && (d = Qa(e, o, d, t, s), o > 0 && (n[r++] = A({
       type: new q(e),
@@ -5185,7 +5185,7 @@ function Ha(i, t) {
 function Qa(i, t, e, n, s) {
   var r;
   const o = (t + 63 & -64) >> 3;
-  for (let a = -1, c = n.length; ++a < c; ) {
+  for (let a = -1, c = n.length; ++a < c;) {
     const u = e[a], d = u == null ? void 0 : u.length;
     if (d >= t)
       d === t ? e[a] = u : (e[a] = u.slice(0, t), s.numBatches = Math.max(s.numBatches, n[a].unshift(u.slice(t, d - t))));
@@ -5629,7 +5629,7 @@ function Qn(i, t, e = t.reduce((n, s) => Math.max(n, s.length), 0)) {
   ];
 }
 function Rr(i, t, e = /* @__PURE__ */ new Map()) {
-  for (let n = -1, s = i.length; ++n < s; ) {
+  for (let n = -1, s = i.length; ++n < s;) {
     const o = i[n].type, a = t[n];
     if (y.isDictionary(o)) {
       if (!e.has(o.id))
@@ -5648,11 +5648,11 @@ class Fn extends Z {
   }
 }
 var Bi;
-(function(i) {
+(function (i) {
   i[i.BUFFER = 0] = "BUFFER";
 })(Bi || (Bi = {}));
 var Ai;
-(function(i) {
+(function (i) {
   i[i.LZ4_FRAME = 0] = "LZ4_FRAME", i[i.ZSTD = 1] = "ZSTD";
 })(Ai || (Ai = {}));
 class Yt {
@@ -5884,7 +5884,7 @@ let Lr = class {
   }
 };
 var Fi;
-(function(i) {
+(function (i) {
   i[i.NONE = 0] = "NONE", i[i.Schema = 1] = "Schema", i[i.DictionaryBatch = 2] = "DictionaryBatch", i[i.RecordBatch = 3] = "RecordBatch", i[i.Tensor = 4] = "Tensor", i[i.SparseTensor = 5] = "SparseTensor";
 })(Fi || (Fi = {}));
 let zt = class _t {
@@ -6051,7 +6051,7 @@ function Ur(i) {
   ], []);
 }
 function kr(i, t = []) {
-  for (let e = -1, n = (i || []).length; ++e < n; ) {
+  for (let e = -1, n = (i || []).length; ++e < n;) {
     const s = i[e];
     s.VALIDITY && t.push(new Ft(t.length, s.VALIDITY.length)), s.TYPE && t.push(new Ft(t.length, s.TYPE.length)), s.OFFSET && t.push(new Ft(t.length, s.OFFSET.length)), s.DATA && t.push(new Ft(t.length, s.DATA.length)), t = kr(s.children, t);
   }
@@ -6304,25 +6304,25 @@ function uc(i) {
 }
 function dc(i) {
   const t = [];
-  for (let e, n = -1, s = -1, r = i.nodesLength(); ++n < r; )
+  for (let e, n = -1, s = -1, r = i.nodesLength(); ++n < r;)
     (e = i.nodes(n)) && (t[++s] = ce.decode(e));
   return t;
 }
 function hc(i, t) {
   const e = [];
-  for (let n, s = -1, r = -1, o = i.buffersLength(); ++s < o; )
+  for (let n, s = -1, r = -1, o = i.buffersLength(); ++s < o;)
     (n = i.buffers(s)) && (t < rt.V4 && (n.bb_pos += 8 * (s + 1)), e[++r] = Ft.decode(n));
   return e;
 }
 function fc(i, t) {
   const e = [];
-  for (let n, s = -1, r = -1, o = i.fieldsLength(); ++s < o; )
+  for (let n, s = -1, r = -1, o = i.fieldsLength(); ++s < o;)
     (n = i.fields(s)) && (e[++r] = x.decode(n, t));
   return e;
 }
 function Xn(i, t) {
   const e = [];
-  for (let n, s = -1, r = -1, o = i.childrenLength(); ++s < o; )
+  for (let n, s = -1, r = -1, o = i.childrenLength(); ++s < o;)
     (n = i.children(s)) && (e[++r] = x.decode(n, t));
   return e;
 }
@@ -6333,7 +6333,7 @@ function pc(i, t) {
 function ii(i) {
   const t = /* @__PURE__ */ new Map();
   if (i)
-    for (let e, n, s = -1, r = Math.trunc(i.customMetadataLength()); ++s < r; )
+    for (let e, n, s = -1, r = Math.trunc(i.customMetadataLength()); ++s < r;)
       (e = i.customMetadata(s)) && (n = e.key()) != null && t.set(n, e.value());
   return t;
 }
@@ -6491,7 +6491,7 @@ class xr {
     return (
       /* 1. */
       e.byteOffset % 8 === 0 && /* 2. */
-      e.byteOffset + e.byteLength <= e.buffer.byteLength ? e : e.slice()
+        e.byteOffset + e.byteLength <= e.buffer.byteLength ? e : e.slice()
     );
   }
   readSchema(t = !1) {
@@ -6556,7 +6556,7 @@ class vc {
       return (
         /* 1. */
         e.byteOffset % 8 === 0 && /* 2. */
-        e.byteOffset + e.byteLength <= e.buffer.byteLength ? e : e.slice()
+          e.byteOffset + e.byteLength <= e.buffer.byteLength ? e : e.slice()
       );
     });
   }
@@ -6635,7 +6635,7 @@ const ki = 4, rn = "ARROW1", Ve = new Uint8Array(rn.length);
 for (let i = 0; i < rn.length; i += 1)
   Ve[i] = rn.codePointAt(i);
 function Rn(i, t = 0) {
-  for (let e = -1, n = Ve.length; ++e < n; )
+  for (let e = -1, n = Ve.length; ++e < n;)
     if (Ve[e] !== i[t + e])
       return !1;
   return !0;
@@ -6863,7 +6863,7 @@ class Ri extends zr {
       return z;
     let t;
     const { _reader: e } = this;
-    for (; t = this._readNextMessageAndValidate(); )
+    for (; t = this._readNextMessageAndValidate();)
       if (t.isSchema())
         this.reset(t.header());
       else if (t.isRecordBatch()) {
@@ -6920,7 +6920,7 @@ class Di extends zr {
         return z;
       let t;
       const { _reader: e } = this;
-      for (; t = yield this._readNextMessageAndValidate(); )
+      for (; t = yield this._readNextMessageAndValidate();)
         if (t.isSchema())
           yield this.reset(t.header());
         else if (t.isRecordBatch()) {
@@ -7136,7 +7136,7 @@ function Oc(i) {
 function Nc(i) {
   return p(this, void 0, void 0, function* () {
     const t = yield i.peek(Ge + 7 & -8);
-    return t && t.byteLength >= 4 ? Rn(t) ? new Vr(new $r(yield i.read())) : new Ni(new Di(i)) : new Ni(new Di(function() {
+    return t && t.byteLength >= 4 ? Rn(t) ? new Vr(new $r(yield i.read())) : new Ni(new Di(i)) : new Ni(new Di(function () {
       return At(this, arguments, function* () {
       });
     }()));
@@ -7201,10 +7201,10 @@ function Dc(i) {
       return yt.call(this, s), on.call(this, i);
     {
       const r = n.reduce((d, h) => Math.max(d, h), n[0]), o = new Int32Array(r + 1), a = new Int32Array(r + 1).fill(-1), c = new Int32Array(e), u = dn(-s[0], e, s);
-      for (let d, h, f = -1; ++f < e; )
+      for (let d, h, f = -1; ++f < e;)
         (h = a[d = n[f]]) === -1 && (h = a[d] = u[d]), c[f] = u[f] - h, ++o[d];
       yt.call(this, c);
-      for (let d, h = -1, f = t.children.length; ++h < f; )
+      for (let d, h = -1, f = t.children.length; ++h < f;)
         if (d = i.children[h]) {
           const T = t.typeIds[h], j = Math.min(e, o[T]);
           this.visit(d.slice(a[T], j));
@@ -7346,7 +7346,7 @@ class Gr extends Sn {
   }
   _writeBodyBuffers(t) {
     let e, n, s;
-    for (let r = -1, o = t.length; ++r < o; )
+    for (let r = -1, o = t.length; ++r < o;)
       (e = t[r]) && (n = e.byteLength) > 0 && (this._write(e), (s = (n + 7 & -8) - n) > 0 && this._writePadding(s));
     return this;
   }
@@ -7448,7 +7448,7 @@ var Uc = Object.create, qr = Object.defineProperty, kc = Object.getOwnPropertyDe
   async send(i) {
     this._bindings.logger.log({ timestamp: /* @__PURE__ */ new Date(), level: 2, origin: 4, topic: 4, event: 4, value: i });
     let t = await this._bindings.startPendingQuery(this._conn, i);
-    for (; t == null; )
+    for (; t == null;)
       t = await this._bindings.pollPendingQuery(this._conn);
     let e = new Hr(this._bindings, this._conn, t), n = await ht.from(e);
     return console.assert(n.isAsync()), console.assert(n.isStream()), n;
@@ -7977,7 +7977,7 @@ var hl = ((i) => (i[i.BUFFER = 0] = "BUFFER", i[i.NODE_FS = 1] = "NODE_FS", i[i.
   window.spr || (window.spr = {});
   let t = (
     // @ts-ignore
-    ((f = window.spr) == null ? void 0 : f.manifest_url) ?? "https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/manifest.json"
+    ((f = window.spr) == null ? void 0 : f.manifest_url) ?? "https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/public/pages/assets/manifest.json"
   ), e = () => {
   };
   window.spr.ready = new Promise((T) => e = T);
@@ -7991,7 +7991,7 @@ var hl = ((i) => (i[i.BUFFER = 0] = "BUFFER", i[i.NODE_FS = 1] = "NODE_FS", i[i.
   await o.instantiate(n.mainModule);
   const a = await o.connect(), c = await fetch(t).then((T) => T.json());
   let u = 0;
-  for (; !Object.values(c).every((T) => typeof T == "string") && u++ < 1e4; )
+  for (; !Object.values(c).every((T) => typeof T == "string") && u++ < 1e4;)
     for (const [T, j] of Object.entries(c))
       if (typeof j == "object")
         for (const [Vt, le] of Object.entries(j))

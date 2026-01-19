@@ -37,7 +37,7 @@ from utils.walk_dir import walk_dir_async
 )
 async def process_query_directory(
     subdir="public",
-    public_url_root="https://f004.backblazeb2.com/file/sprocket-artifacts",
+    public_url_root="https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets",
     refresh_parquet=True,
     create_archive=True,
     build_pages=True,

@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Sprocket Public Datasets</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +18,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Source+Code+Pro&display=swap"
+        rel="stylesheet">
 
     <!-- Favicons -->
     <link rel="icon" href="./assets/favicon/favicon.ico" />
@@ -30,11 +32,13 @@
     <!-- OpenGraph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Sprocket Public Datasets">
-    <meta property="og:url" content="https://f004.backblazeb2.com/file/sprocket-artifacts/public/summary.html">
+    <meta property="og:url"
+        content="https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/public/summary.html">
     <!-- TODO: Get source asset to modify
         <meta property="og:image" content="">
     -->
-    <meta property="og:description" content="List of datasets that are exported from the Sprocket Database to enable community members to perform their own analyses">
+    <meta property="og:description"
+        content="List of datasets that are exported from the Sprocket Database to enable community members to perform their own analyses">
 
     <!-- Tailwind Config -->
     <script>
@@ -157,94 +161,103 @@
 </head>
 
 <body class="bg-gray-800 text-gray-200">
-<main class="container mx-auto py-8">
-<h1 class="text-3xl font-bold text-primary mb-2">Sprocket Datasets</h1>
+    <main class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold text-primary mb-2">Sprocket Datasets</h1>
 
-<p class="my-2">This document outlines a list of available datasets produced from Sprocket's database.
-    There is information about players, teams, and games included here.</p>
+        <p class="my-2">This document outlines a list of available datasets produced from Sprocket's database.
+            There is information about players, teams, and games included here.</p>
 
-<p>
-    You can begin exploring this data with the <a class="font-medium underline text-primary hover:no-underline" href="https://shell.duckdb.org" target="_blank">DuckDB Web Console</a>.
-    </p><p>For more thorough tools, consider using the <a class="font-medium underline text-primary hover:no-underline" href="https://duckdb.org/docs/installation/index">DuckDB CLI</a>, <a class="font-medium underline text-primary hover:no-underline"
-        href="https://www.tablab.app/">Tab Lab</a> or <a class="font-medium underline text-primary hover:no-underline" href="https://www.timestored.com/qstudio/"
-                                                      target="_blank">qStudio</a>
-</p>
+        <p>
+            You can begin exploring this data with the <a class="font-medium underline text-primary hover:no-underline"
+                href="https://shell.duckdb.org" target="_blank">DuckDB Web Console</a>.
+        </p>
+        <p>For more thorough tools, consider using the <a class="font-medium underline text-primary hover:no-underline"
+                href="https://duckdb.org/docs/installation/index">DuckDB CLI</a>, <a
+                class="font-medium underline text-primary hover:no-underline" href="https://www.tablab.app/">Tab Lab</a>
+            or <a class="font-medium underline text-primary hover:no-underline"
+                href="https://www.timestored.com/qstudio/" target="_blank">qStudio</a>
+        </p>
 
-<hr class="border-primary my-4"/>
+        <hr class="border-primary my-4" />
 
-<h2 class="text-2xl font-bold text-primary">Available Views</h2>
-<p>Each view is available as a <a class="font-medium underline text-primary hover:no-underline" href="https://parquet.apache.org/" target="_blank"><span
-        class="font-mono">.parquet</span></a> file. You can think of <span class="font-mono">parquet</span> as a more
-    advanced CSV file.</p>
+        <h2 class="text-2xl font-bold text-primary">Available Views</h2>
+        <p>Each view is available as a <a class="font-medium underline text-primary hover:no-underline"
+                href="https://parquet.apache.org/" target="_blank"><span class="font-mono">.parquet</span></a> file. You
+            can think of <span class="font-mono">parquet</span> as a more
+            advanced CSV file.</p>
 
-<h3 class="text-xl font-mono text-primary">Available Views</h3>
-    <ul class="list-disc pl-4">
-    {% for trace in traces %}
+        <h3 class="text-xl font-mono text-primary">Available Views</h3>
+        <ul class="list-disc pl-4">
+            {% for trace in traces %}
+            {% set stripped_path = trace['query_path'].lstrip("/") %}
+            <li> <a class="font-medium underline hover:no-underline" href="#{{stripped_path}}"> {{stripped_path}} </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+
+        {% for trace in traces %}
         {% set stripped_path = trace['query_path'].lstrip("/") %}
-        <li> <a class="font-medium underline hover:no-underline" href="#{{stripped_path}}"> {{stripped_path}} </a></li>
-    {% endfor %}
-    </ul>
 
+        <article title="{{ stripped_path }}" class="my-4">
+            <h3 class="text-xl font-mono text-primary" id="{{ stripped_path }}">{{ stripped_path }}</h3>
+            <section class="p-4">
+                {{ trace['query_docs']|safe }}
+            </section>
 
+            <section class="flex flex-col gap-4">
 
- {% for trace in traces %}
-    {% set stripped_path = trace['query_path'].lstrip("/") %}
-
-    <article title="{{ stripped_path }}" class="my-4">
-        <h3 class="text-xl font-mono text-primary" id="{{ stripped_path }}">{{ stripped_path }}</h3>
-        <section class="p-4">
-            {{ trace['query_docs']|safe }}
-        </section>
-
-        <section class="flex flex-col gap-4">
-
-        <div>
-        <h4 class="mb-2 text-lg text-primary">Try Me:</h4>
-        <pre class="text-xs"><code lang="sql">SELECT *
+                <div>
+                    <h4 class="mb-2 text-lg text-primary">Try Me:</h4>
+                    <pre class="text-xs"><code lang="sql">SELECT *
 FROM read_parquet(
     '{{ public_url }}{{ trace['query_path'] }}'
 );</code></pre>
-        </div>
+                </div>
 
-            <div>
-        <h4 class="mb-2 text-lg text-primary">Table Schema:</h4>
-        {{ list_table(trace["schema"]) }}
-            </div><div>
-        <h4 class="mb-2 text-lg text-primary">Sample Data:</h4>
-        {{ list_table(trace["sample"]) }}
-        </div><div>
-        <h4 class="mb-2 text-lg text-primary">At a Glance:</h4>
-        {{ list_table(trace["glance"]) }}
-        </div>
-        <a
-                class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4
+                <div>
+                    <h4 class="mb-2 text-lg text-primary">Table Schema:</h4>
+                    {{ list_table(trace["schema"]) }}
+                </div>
+                <div>
+                    <h4 class="mb-2 text-lg text-primary">Sample Data:</h4>
+                    {{ list_table(trace["sample"]) }}
+                </div>
+                <div>
+                    <h4 class="mb-2 text-lg text-primary">At a Glance:</h4>
+                    {{ list_table(trace["glance"]) }}
+                </div>
+                <a class="flex gap-2 block mt-4 text-gray-50 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:ring-4
                     bg-accent-500 hover:bg-accent-700 focus:outline-none focus:ring-accent-800
-                "
-                href="{{ public_url }}{{ trace['query_path'] }}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
+                " href="{{ public_url }}{{ trace['query_path'] }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
 
-            Download {{ trace['query_path'] }}
-        </a>
-        </section>
-    </article>
+                    Download {{ trace['query_path'] }}
+                </a>
+            </section>
+        </article>
 
- {% endfor %}
-
-
-    <hr class="border-primary my-4"/>
-
-    <h2 class="text-2xl font-bold text-primary">Archived Datasets</h2>
-    <ul class="list-disc">
-    {% for dataset in archive_files %}
-        <li><a class="font-medium underline hover:no-underline" href="{{ public_url }}/{{ dataset }}">{{ dataset }}</a></li>
-    {% endfor %}
-    </ul>
+        {% endfor %}
 
 
+        <hr class="border-primary my-4" />
 
-</main>
+        <h2 class="text-2xl font-bold text-primary">Archived Datasets</h2>
+        <ul class="list-disc">
+            {% for dataset in archive_files %}
+            <li><a class="font-medium underline hover:no-underline" href="{{ public_url }}/{{ dataset }}">{{ dataset
+                    }}</a></li>
+            {% endfor %}
+        </ul>
+
+
+
+    </main>
 </body>
 
 </html>
