@@ -10,33 +10,33 @@ import * as ddb from "@duckdb/duckdb-wasm";
   let manifest_url: string =
     // @ts-ignore
     window.spr?.manifest_url ??
-    "https://f004.backblazeb2.com/file/sprocket-artifacts/public/pages/assets/manifest.json";
+    "https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/public/pages/assets/manifest.json";
 
-  let res: CallableFunction = () => {};
+  let res: CallableFunction = () => { };
   // @ts-ignore
   window.spr.ready = new Promise((r) => (res = r));
 
   const DUCKDB_CONFIG = useEh
     ? {
-        mainModule: (
-          await import("@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url")
-        ).default,
-        mainWorker: (
-          await import(
-            "@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?worker"
-          )
-        ).default,
-      }
+      mainModule: (
+        await import("@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url")
+      ).default,
+      mainWorker: (
+        await import(
+          "@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?worker"
+        )
+      ).default,
+    }
     : {
-        mainModule: (
-          await import("@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url")
-        ).default,
-        mainWorker: (
-          await import(
-            "@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?worker"
-          )
-        ).default,
-      };
+      mainModule: (
+        await import("@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url")
+      ).default,
+      mainWorker: (
+        await import(
+          "@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?worker"
+        )
+      ).default,
+    };
 
   const logger = new ddb.VoidLogger();
   const worker = new DUCKDB_CONFIG.mainWorker();
