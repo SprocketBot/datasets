@@ -142,9 +142,9 @@ FROM
 WHERE
   sm."createdAt" >= date_trunc('month', NOW() - INTERVAL '1 year')
 GROUP BY
-  p.id,
-  gm.code,
-  gsgp.description,
-  sm."createdAt",
-  sm.id,
-  spe.points;
+    p.id,
+    gm.code,
+    gsgp.description,
+    sm."createdAt",
+    sm.id,
+    spe.points
