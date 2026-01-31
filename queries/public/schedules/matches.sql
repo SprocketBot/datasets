@@ -4,6 +4,7 @@ SELECT
   sf."scheduleGroupId" as match_group_id,
   sg.start AS scheduling_start_time,
   sg.end AS scheduling_end_time,
+  ms.scheduled_time,
   home.title as home,
   away.title as away,
   gsgp.description as league,
@@ -38,6 +39,8 @@ FROM
   INNER JOIN sprocket.game_skill_group gsg ON gsgp."skillGroupId" = gsg.id
   INNER JOIN sprocket.game_mode gm on m."gameModeId" = gm.id
   LEFT JOIN sprocket.round r ON m.id = r."matchId"
+  LEFT JOIN mledb_bridge.series_to_match_parent stmp ON mp.id = stmp."matchParentId"
+  LEFT JOIN mledb.series ms ON stmp."seriesId" = ms.id
 GROUP BY
   m.id,
   home.id,
@@ -45,6 +48,7 @@ GROUP BY
   gsgp.id,
   sg.start,
   sg.end,
+  ms.scheduled_time,
   sf.id,
   gm.id,
   gsg.ordinal
