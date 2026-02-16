@@ -4,6 +4,8 @@ on:
   schedule:
     # Run every hour
     - cron: '0 * * * *'
+    # Also run Mondays at 12:30pm EST (17:30 UTC), will not account for daylight savings time
+    - cron: '30 17 * * 1'
   push:
     branches:
       - main
