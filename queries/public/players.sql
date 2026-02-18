@@ -6,32 +6,32 @@ WITH
     FROM
       mledb.eligibility_data ed
     WHERE
-      ed.updated_at >= NOW() - INTERVAL '30 days'
+      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
     GROUP BY
       2
   ),
   eligibility_date as (
     SELECT
-      ed.created_at + interval '30 days' as "Eligible Until",
+      DATE(ed.created_at_est) + INTERVAL '30 DAYS' as "Eligible Through",
       sum_points as "Total Points",
       ed.player_id
     FROM
       (
         -- can uncomment below once we rememdy the numorous issues in the sprocket.eligibility_data table
         --         SELECT
-        --            ed."createdAt",
+        --            ed."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' AS created_at_est,
         --            ed.points,
         --            ed."matchParentId",
         --            ed."playerId",
         --            SUM(ed.points) OVER (PARTITION BY ed."playerId" ORDER BY ed."createdAt" DESC) AS sum_points
         --        FROM sprocket.eligibility_data ed
-        --        WHERE ed."createdAt" >= CURRENT_DATE - interval '30 days'
+        --        WHERE ed."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
         --        GROUP BY
-        --            1, 2, 3, 4
+        --            1, 2, 3, 4, ed."createdAt"
         --        ORDER BY ed."createdAt" DESC
         -- temporary fix using mledb.eligibility_data table, remove once above is uncommented
         SELECT
-          ed.created_at,
+          ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' AS created_at_est,
           ed.scrim_points,
           ed.scrim_id,
           ed.player_id,
@@ -44,13 +44,14 @@ WITH
         FROM
           mledb.eligibility_data ed
         WHERE
-          ed.created_at >= CURRENT_DATE - interval '30 days'
+		      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
         GROUP BY
           1,
           2,
           3,
-          4
-        ORDER BY
+          4,
+          ed.created_at --needed for the partition's order by statement
+        ORDER BY 
           ed.created_at DESC
       ) ed
       LEFT JOIN mledb.player p ON ed.player_id = p.id
@@ -59,7 +60,7 @@ WITH
       sum_points = sc.eligibility_requirement
     ORDER BY
       ed.player_id,
-      ed.created_at DESC
+      ed.created_at_est DESC
   )
 SELECT
   mp.name,
@@ -79,9 +80,9 @@ SELECT
   mle_p.role as slot,
   COALESCE(sp.points, 0) as current_scrim_points,
   case
-    when ed."Eligible Until" is null then 'Not Eligible'
-    else to_char(ed."Eligible Until"::timestamp, 'DD Mon YYYY')
-  end as "Eligible Until"
+    when ed."Eligible Through" is null then 'Not Eligible'
+    else to_char(ed."Eligible Through"::timestamp, 'DD Mon YYYY')
+  end as "Eligible Through"
 FROM
   sprocket.player p
   INNER JOIN sprocket.member sm ON sm.id = p."memberId"
