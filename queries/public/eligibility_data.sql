@@ -8,4 +8,4 @@ FROM
     mledb.eligibility_data ed
 WHERE
     ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'  -- Step 1: go back 30 days
-    - ((EXTRACT(DOW FROM (DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'))::int + 6) % 7) * INTERVAL '1 day' -- Step 2: go back to first Monday before 30 days
+    - ((EXTRACT(DOW FROM (DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'))::int + 6) % 7) * INTERVAL '1 DAY' -- Step 2: go back to first Monday before 30 days
