@@ -70,6 +70,9 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Wait for CDN cache to refresh
+        run: sleep 600
+
       - name: Trigger Evidence Deployment
         run: | 
           curl -X POST \
