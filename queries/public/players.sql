@@ -6,7 +6,7 @@ WITH
     FROM
       mledb.eligibility_data ed
     WHERE
-      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
+      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
     GROUP BY
       2
   ),
@@ -44,7 +44,7 @@ WITH
         FROM
           mledb.eligibility_data ed
         WHERE
-		      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
+		      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
         GROUP BY
           1,
           2,
@@ -81,7 +81,7 @@ SELECT
   COALESCE(sp.points, 0) as current_scrim_points,
   case
     when ed."Eligible Through" is null then 'Not Eligible'
-    else to_char(ed."Eligible Through"::timestamp, 'DD Mon YYYY')
+    else to_char(ed."Eligible Through", 'DD Mon YYYY')
   end as "Eligible Through"
 FROM
   sprocket.player p
