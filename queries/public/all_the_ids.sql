@@ -12,4 +12,4 @@ from
   inner join sprocket.player p on p."memberId" = m.id
   inner join sprocket.member_profile mp on mp."memberId" = m.id
   inner join sprocket.user_authentication_account uaa on uaa."userId" = u.id
-  inner join mledb.player mlep on mlep.discord_id = uaa."accountId";
+  left join mledb.player mlep on mlep.discord_id = uaa."accountId";
