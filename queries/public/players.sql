@@ -6,13 +6,13 @@ WITH
     FROM
       mledb.eligibility_data ed
     WHERE
-      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
+      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE (NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
     GROUP BY
       2
   ),
   eligibility_date as (
     SELECT
-      DATE(ed.created_at_est) + INTERVAL '30 DAYS' as "Eligible Through",
+      DATE (ed.created_at_est) + INTERVAL '30 DAYS' as "Eligible Through",
       sum_points as "Total Points",
       ed.player_id
     FROM
@@ -44,14 +44,14 @@ WITH
         FROM
           mledb.eligibility_data ed
         WHERE
-		      ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE(NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
+          ed.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' >= DATE (NOW() AT TIME ZONE 'America/New_York') - INTERVAL '30 DAYS'
         GROUP BY
           1,
           2,
           3,
           4,
           ed.created_at --needed for the partition's order by statement
-        ORDER BY 
+        ORDER BY
           ed.created_at DESC
       ) ed
       LEFT JOIN mledb.player p ON ed.player_id = p.id
