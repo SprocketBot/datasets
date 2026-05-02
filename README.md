@@ -25,3 +25,12 @@
 
 - Now you can test all runs with: `python ./src/flows/process-query-directory.py`
   - Check results of test run here: https://sprocket-public-datasets.nyc3.cdn.digitaloceanspaces.com/datasets/test/pages/index.html
+
+## Dev database snapshots
+
+- Create a dev snapshot from GitHub Actions by manually running `Create Dev Database Snapshot`. It uses the existing `PGPASS_CONTENT` and `AWS_CREDS_CONTENT` secrets, writes a timestamped PostgreSQL custom-format dump, and updates `dev-snapshots/postgres/latest.dump` in the datasets Spaces bucket.
+- To import from Spaces, install the AWS CLI and provide Spaces credentials via your normal AWS environment or `--aws-creds-file`.
+- Import the latest snapshot locally with Docker Postgres:
+  - `scripts/import-dev-snapshot.sh --container datasets-postgres --dbname datasets --user postgres --clean --create-db`
+- Or import into a local Postgres connection with `pg_restore` installed:
+  - `scripts/import-dev-snapshot.sh --host localhost --port 5432 --dbname datasets --user postgres --clean --create-db`

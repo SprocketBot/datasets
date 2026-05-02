@@ -1,0 +1,129 @@
+name: Create Dev Database Snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot_prefix:
+        description: S3 path prefix for dev snapshots
+        required: false
+        default: dev-snapshots/postgres
+
+jobs:
+  snapshot:
+    name: Dump prod Postgres and upload snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      PGPASSFILE: ${{ github.workspace }}/.pgpass
+      SPACES_BUCKET: sprocket-public-datasets
+      SPACES_ENDPOINT_URL: https://nyc3.digitaloceanspaces.com
+      SNAPSHOT_PREFIX: ${{ inputs.snapshot_prefix }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install snapshot dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends postgresql-client awscli
+
+      - name: Create and upload PostgreSQL snapshot
+        shell: bash
+        env:
+          PGPASS_CONTENT: ${{ secrets.PGPASS_CONTENT }}
+          AWS_CREDS_CONTENT: ${{ secrets.AWS_CREDS_CONTENT }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${PGPASS_CONTENT}" ]]; then
+            echo "PGPASS_CONTENT secret is required" >&2
+            exit 1
+          fi
+          if [[ -z "${AWS_CREDS_CONTENT}" ]]; then
+            echo "AWS_CREDS_CONTENT secret is required" >&2
+            exit 1
+          fi
+
+          printf '%s\n' "${PGPASS_CONTENT}" > "${PGPASSFILE}"
+          chmod 600 "${PGPASSFILE}"
+
+          aws_creds_file="$(mktemp)"
+          printf '%s\n' "${AWS_CREDS_CONTENT}" > "${aws_creds_file}"
+          set -a
+          # shellcheck disable=SC1090
+          source "${aws_creds_file}"
+          set +a
+          rm -f "${aws_creds_file}"
+
+          if [[ -z "${DO_ACCESS_KEY_ID:-}" || -z "${DO_SECRET_ACCESS_KEY:-}" ]]; then
+            echo "AWS_CREDS_CONTENT must define DO_ACCESS_KEY_ID and DO_SECRET_ACCESS_KEY" >&2
+            exit 1
+          fi
+          echo "::add-mask::${DO_ACCESS_KEY_ID}"
+          echo "::add-mask::${DO_SECRET_ACCESS_KEY}"
+
+          export AWS_ACCESS_KEY_ID="${DO_ACCESS_KEY_ID}"
+          export AWS_SECRET_ACCESS_KEY="${DO_SECRET_ACCESS_KEY}"
+          export AWS_DEFAULT_REGION="${DO_REGION_NAME:-nyc3}"
+          SPACES_BUCKET="${S3_BUCKET_NAME:-${SPACES_BUCKET}}"
+          SPACES_ENDPOINT_URL="${DO_ENDPOINT_URL:-${SPACES_ENDPOINT_URL}}"
+
+          timestamp="$(date -u +'%Y%m%dT%H%M%SZ')"
+          dump_file="postgres-${timestamp}.dump"
+          normalized_prefix="${SNAPSHOT_PREFIX%/}"
+
+          pg_fields="$(python3 <<'PY'
+          from pathlib import Path
+
+          for raw_line in Path('.pgpass').read_text().splitlines():
+              line = raw_line.strip()
+              if not line or line.startswith('#'):
+                  continue
+
+              fields = []
+              current = []
+              escaped = False
+              for char in line:
+                  if escaped:
+                      current.append(char)
+                      escaped = False
+                  elif char == '\\':
+                      escaped = True
+                  elif char == ':':
+                      fields.append(''.join(current))
+                      current = []
+                  else:
+                      current.append(char)
+              fields.append(''.join(current))
+
+              if len(fields) >= 5:
+                  print('\t'.join(fields[:4]))
+                  break
+          else:
+              raise SystemExit('no usable .pgpass entry found')
+          PY
+          )"
+          IFS=$'\t' read -r pg_host pg_port pg_database pg_user <<< "${pg_fields}"
+          if [[ -z "${pg_host}" || -z "${pg_port}" || -z "${pg_database}" || -z "${pg_user}" ]]; then
+            echo "Unable to derive host, port, database, and user from PGPASS_CONTENT" >&2
+            exit 1
+          fi
+
+          pg_dump \
+            --format=custom \
+            --no-owner \
+            --no-privileges \
+            --host="${pg_host}" \
+            --port="${pg_port}" \
+            --username="${pg_user}" \
+            --dbname="${pg_database}" \
+            --file="${dump_file}"
+
+          aws --endpoint-url "${SPACES_ENDPOINT_URL}" s3 cp "${dump_file}" "s3://${SPACES_BUCKET}/${normalized_prefix}/${dump_file}" --acl public-read
+          aws --endpoint-url "${SPACES_ENDPOINT_URL}" s3 cp "${dump_file}" "s3://${SPACES_BUCKET}/${normalized_prefix}/latest.dump" --acl public-read
+
+          echo "Uploaded s3://${SPACES_BUCKET}/${normalized_prefix}/${dump_file}"
+          echo "Uploaded s3://${SPACES_BUCKET}/${normalized_prefix}/latest.dump"
