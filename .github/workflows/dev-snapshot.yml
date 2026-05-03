@@ -29,7 +29,16 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends postgresql-client awscli
+          sudo apt-get install -y --no-install-recommends postgresql-client unzip
+
+          if ! command -v aws >/dev/null 2>&1; then
+            curl --fail --location --silent --show-error "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output /tmp/awscliv2.zip
+            unzip -q /tmp/awscliv2.zip -d /tmp
+            sudo /tmp/aws/install --update
+          fi
+
+          pg_dump --version
+          aws --version
 
       - name: Create and upload PostgreSQL snapshot
         shell: bash
