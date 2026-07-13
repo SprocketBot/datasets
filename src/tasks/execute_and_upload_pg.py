@@ -1,4 +1,4 @@
-from prefect import task
+from prefect import task, get_run_logger
 from prefect.filesystems import RemoteFileSystem
 
 from utils.run_pg import run_pg
@@ -20,43 +20,38 @@ def execute_and_upload_pg(query: str,
     :param fs: Remote file system used for writing the file.
     :param formats: Formats to produce; parquet, csv, and json are supported
 
-    :return: The path of the uploaded file in the bucket.
+    :return: The path of the uploaded file in the bucket, or None if the query failed.
     """
-    results = run_pg(f"""
-    WITH ORIGINAL AS ({query})
-    SELECT current_timestamp as "as_of", ORIGINAL.* FROM ORIGINAL
-    """)
+    logger = get_run_logger()
 
+    try:
+        results = run_pg(f"""
+        WITH ORIGINAL AS ({query})
+        SELECT current_timestamp as "as_of", ORIGINAL.* FROM ORIGINAL
+        """)
 
-    if "parquet" in formats:
-        (parquet_path, close) = write_parquet(results)
+        if "parquet" in formats:
+            (parquet_path, close) = write_parquet(results)
+            with open(parquet_path, "rb") as f:
+                fs.write_path(destination_path + ".parquet", f.read())
+            if close:
+                close()
 
-        with open(parquet_path, "rb") as f:
-            fs.write_path(
-                destination_path + ".parquet",
-                f.read()
-            )
-        if close:
-            close()
+        if "csv" in formats:
+            (csv_path, close) = write_csv(results)
+            with open(csv_path, "rb") as f:
+                fs.write_path(destination_path + ".csv", f.read())
+            if close:
+                close()
 
-    if "csv" in formats:
-        (csv_path, close) = write_csv(results)
-        with open(csv_path, "rb") as f:
-            fs.write_path(
-                destination_path + ".csv",
-                f.read()
-            )
-        if close:
-            close()
+        if "json" in formats:
+            (json_path, close) = write_json(results)
+            with open(json_path, "rb") as f:
+                fs.write_path(destination_path + ".json", f.read())
+            if close:
+                close()
 
-    if "json" in formats:
-        (json_path, close) = write_json(results)
-        with open(json_path, "rb") as f:
-            fs.write_path(
-                destination_path + ".json",
-                f.read()
-            )
-        if close:
-            close()
-
-    return destination_path
+        return destination_path
+    except Exception as e:
+        logger.error(f"Failed to execute/upload query for {destination_path}: {e}")
+        return None
