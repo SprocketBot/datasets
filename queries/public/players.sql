@@ -69,6 +69,8 @@ SELECT
   p."memberId" as member_id,
   uaa."accountId" as discord_id,
   gsgp.description as skill_group,
+  g.id as game_id,
+  g.title as game_title,
   mle_p.team_name as franchise,
   case
     when mle_p.id = t.franchise_manager_id then 'Franchise Manager'
@@ -90,6 +92,8 @@ FROM
   INNER JOIN sprocket.user su ON su.id = sm."userId"
   INNER JOIN sprocket.user_authentication_account uaa ON sm."userId" = uaa."userId"
   INNER JOIN sprocket.game_skill_group_profile gsgp ON p."skillGroupId" = gsgp."skillGroupId"
+  INNER JOIN sprocket.game_skill_group gsg ON gsg.id = p."skillGroupId"
+  INNER JOIN sprocket.game g ON g.id = gsg."gameId"
   INNER JOIN sprocket.member_profile mp ON p."memberId" = mp."memberId"
   INNER JOIN mledb_bridge.player_to_player bridge_ptp ON bridge_ptp."sprocketPlayerId" = p.id
   INNER JOIN mledb.player mle_p ON bridge_ptp."mledPlayerId" = mle_p.id
