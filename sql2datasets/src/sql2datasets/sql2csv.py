@@ -65,6 +65,7 @@ def run_sql_script(
         psycopg2.Error: If database connection or query execution fails.
     """
     logger.info(f"  Executing SQL script: {file_path}")
+    connection = None
     try:
         # Connect to PostgreSQL database
         logger.info(
@@ -102,9 +103,6 @@ def run_sql_script(
         logger.debug("    Executing SQL script")
         df = pd.read_sql_query(sql_script, connection)
 
-        # Close connection
-        connection.close()
-
         logger.info("  SQL script executed successfully")
         return df
     except psycopg2.Error as e:
@@ -113,6 +111,9 @@ def run_sql_script(
     except Exception as e:
         logger.error(f"Error processing SQL script {file_path}: {e}")
         raise
+    finally:
+        if connection is not None:
+            connection.close()
 
 
 def upload_to_s3(file_name: str, file_path: str) -> None:
