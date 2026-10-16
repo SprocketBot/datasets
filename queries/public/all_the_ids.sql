@@ -5,11 +5,13 @@ select
   mlep.id as mledb_player_id,
   mlep.mleid,
   mlep.name as mledb_display_name,
-  mp.name as sprocket_display_name
+  mp.name as sprocket_display_name,
+  gsg.id AS skill_group_id
 from
   sprocket.user u
   inner join sprocket.member m on m."userId" = u.id
   inner join sprocket.player p on p."memberId" = m.id
   inner join sprocket.member_profile mp on mp."memberId" = m.id
   inner join sprocket.user_authentication_account uaa on uaa."userId" = u.id
+  INNER JOIN sprocket.game_skill_group gsg ON p."skillGroupId" = gsg.id
   left join mledb.player mlep on mlep.discord_id = uaa."accountId";
